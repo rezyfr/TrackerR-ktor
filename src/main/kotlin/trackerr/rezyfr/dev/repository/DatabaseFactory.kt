@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import trackerr.rezyfr.dev.data.table.UserTable
+import trackerr.rezyfr.dev.data.table.WalletTable
 
 object DatabaseFactory {
     fun hikari(): HikariDataSource {
@@ -36,5 +37,6 @@ fun Application.configureDatabase() {
 
     transaction {
         SchemaUtils.create(UserTable)
+        SchemaUtils.create(WalletTable)
     }
 }
