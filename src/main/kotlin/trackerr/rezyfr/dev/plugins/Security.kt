@@ -1,38 +1,34 @@
 package trackerr.rezyfr.dev.plugins
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
+import org.kodein.di.instance
+import trackerr.rezyfr.dev.authentication.JwtService
+import trackerr.rezyfr.dev.controller.UserController
 
 fun Application.configureSecurity() {
+    val userController by ModulesConfig.kodein.instance<UserController>()
     data class MySession(val count: Int = 0)
     install(Sessions) {
         cookie<MySession>("MY_SESSION") {
             cookie.extensions["SameSite"] = "lax"
         }
     }
-    // Please read the jwt property from the config file if you are using EngineMain
-    val jwtAudience = "jwt-audience"
-    val jwtDomain = "https://jwt-provider-domain/"
-    val jwtRealm = "ktor sample app"
-    val jwtSecret = "secret"
     authentication {
         jwt {
-            realm = jwtRealm
-            verifier(
-                    JWT
-                            .require(Algorithm.HMAC256(jwtSecret))
-                            .withAudience(jwtAudience)
-                            .withIssuer(jwtDomain)
-                            .build()
-            )
+            verifier(JwtService.verifier)
+            realm = "trackerr.rezyfr.dev"
             validate { credential ->
-                if (credential.payload.audience.contains(jwtAudience)) JWTPrincipal(credential.payload) else null
+                if (credential.payload.audience.contains(JwtService.audience)) {
+                    val payload = credential.payload
+                    val email = payload.getClaim("email").asString()
+                    val user = userController.findUserByEmail(email)
+                    user
+                } else null
             }
         }
     }

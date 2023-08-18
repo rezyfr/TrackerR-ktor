@@ -13,6 +13,7 @@ import trackerr.rezyfr.dev.service.UserService
 interface UserController {
     suspend fun register(call: ApplicationCall)
     suspend fun login(call: ApplicationCall)
+    suspend fun findUserByEmail(email: String): User?
 }
 
 class UserControllerImpl(
@@ -40,5 +41,9 @@ class UserControllerImpl(
         } catch (e: Exception) {
             call.respond(HttpStatusCode.BadRequest, ErrorResponse(e.message ?: "Something went wrong", false))
         }
+    }
+
+    override suspend fun findUserByEmail(email: String): User? {
+        return userService.findUserByEmail(email)
     }
 }
