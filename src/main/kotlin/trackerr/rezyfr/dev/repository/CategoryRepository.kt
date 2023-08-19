@@ -5,15 +5,19 @@ import trackerr.rezyfr.dev.data.model.Category
 import trackerr.rezyfr.dev.data.model.CategoryType
 import trackerr.rezyfr.dev.data.model.response.CategoryResponse
 import trackerr.rezyfr.dev.data.table.CategoryTable
+import trackerr.rezyfr.dev.mapper.CategoryMapper
 import trackerr.rezyfr.dev.repository.DatabaseFactory.dbQuery
 
 interface CategoryRepository {
     suspend fun addCategory(category: Category): CategoryResponse
     suspend fun getCategories(userEmail: String, type: CategoryType): List<CategoryResponse>
     suspend fun populateStarterCategories(userEmail: String)
+    suspend fun getCategoryById(id: Int, userEmail: String): CategoryResponse?
 }
 
-class CategoryRepositoryImpl : CategoryRepository {
+class CategoryRepositoryImpl(
+    private val mapper: CategoryMapper
+) : CategoryRepository {
     override suspend fun addCategory(category: Category): CategoryResponse {
         return dbQuery {
             val rows = CategoryTable.insert {
@@ -21,7 +25,7 @@ class CategoryRepositoryImpl : CategoryRepository {
                 it[type] = category.type
                 it[userEmail] = category.userEmail
             }.resultedValues
-            rowsToCategory(rows)!!
+            mapper.rowsToCategory(rows)!!
         }
     }
 
@@ -30,7 +34,7 @@ class CategoryRepositoryImpl : CategoryRepository {
             CategoryTable.select {
                 CategoryTable.userEmail.eq(userEmail) and CategoryTable.type.eq(type)
             }.map {
-                rowToCategory(it)
+                mapper.rowToCategory(it)
             }
         }
     }
@@ -49,23 +53,14 @@ class CategoryRepositoryImpl : CategoryRepository {
         }
     }
 
-    private fun rowsToCategory(rows: List<ResultRow>?): CategoryResponse? {
-        return rows?.map {
-            CategoryResponse(
-                id = it[CategoryTable.id],
-                name = it[CategoryTable.name],
-                type = it[CategoryTable.type]
-            )
-        }?.firstOrNull()
-    }
-
-    private fun rowToCategory(row: ResultRow): CategoryResponse {
-        return row.let {
-            CategoryResponse(
-                id = it[CategoryTable.id],
-                name = it[CategoryTable.name],
-                type = it[CategoryTable.type]
-            )
+    override suspend fun getCategoryById(id: Int, userEmail: String): CategoryResponse? {
+        return dbQuery {
+            CategoryTable.select {
+                CategoryTable.id.eq(id)
+                CategoryTable.userEmail.eq(userEmail)
+            }.map {
+                mapper.rowToCategory(it)
+            }.firstOrNull()
         }
     }
 }

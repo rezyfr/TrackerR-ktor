@@ -5,6 +5,7 @@ import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 import trackerr.rezyfr.dev.authentication.JwtService
 import trackerr.rezyfr.dev.controller.*
+import trackerr.rezyfr.dev.mapper.CategoryMapper
 import trackerr.rezyfr.dev.repository.*
 import trackerr.rezyfr.dev.service.*
 import trackerr.rezyfr.dev.util.PasswordManager
@@ -13,6 +14,10 @@ object ModulesConfig {
     private val authModule = DI.Module("AUTH") {
         bindSingleton { PasswordManager }
         bindSingleton { JwtService }
+    }
+
+    private val mapperModule = DI.Module("MAPPER") {
+        bindSingleton { CategoryMapper() }
     }
 
     private val userModule = DI.Module("USER") {
@@ -29,14 +34,22 @@ object ModulesConfig {
 
     private val categoryModule = DI.Module("CATEGORY") {
         bindSingleton<CategoryService> { CategoryServiceImpl(instance()) }
-        bindSingleton<CategoryRepository> { CategoryRepositoryImpl() }
+        bindSingleton<CategoryRepository> { CategoryRepositoryImpl(instance()) }
         bindSingleton<CategoryController> { CategoryControllerImpl(instance()) }
+    }
+
+    private val transactionModule = DI.Module("TRANSACTION") {
+        bindSingleton<TransactionService> { TransactionServiceImpl(instance(), instance(), instance()) }
+        bindSingleton<TransactionRepository> { TransactionRepositoryImpl() }
+        bindSingleton<TransactionController> { TransactionControllerImpl(instance()) }
     }
 
     internal val kodein = DI {
         import(authModule)
+        import(mapperModule)
         import(userModule)
         import(walletModule)
         import(categoryModule)
+        import(transactionModule)
     }
 }

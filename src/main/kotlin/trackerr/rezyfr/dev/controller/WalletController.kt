@@ -57,11 +57,13 @@ class WalletControllerImpl(
 
     override suspend fun updateWalletBalance(call: ApplicationCall) {
         try {
-            call.receive<UpdateWalletBalanceRequest>().apply {
-                walletService.updateWalletBalance(
-                    id, balance
-                ).let {
-                    call.respond(HttpStatusCode.OK, it)
+            call.principal<User>()!!.let {
+                call.receive<UpdateWalletBalanceRequest>().apply {
+                    walletService.updateWalletBalance(
+                        id, balance, it.email
+                    ).let {
+                        call.respond(HttpStatusCode.OK, it)
+                    }
                 }
             }
         } catch (e: Exception) {

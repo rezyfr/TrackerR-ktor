@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import trackerr.rezyfr.dev.data.table.CategoryTable
+import trackerr.rezyfr.dev.data.table.TransactionTable
 import trackerr.rezyfr.dev.data.table.UserTable
 import trackerr.rezyfr.dev.data.table.WalletTable
 
@@ -48,5 +49,6 @@ fun Application.configureDatabase() {
         SchemaUtils.create(UserTable)
         SchemaUtils.create(WalletTable)
         SchemaUtils.create(CategoryTable)
+        SchemaUtils.create(TransactionTable)
     }
 }

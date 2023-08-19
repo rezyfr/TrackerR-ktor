@@ -8,7 +8,7 @@ import trackerr.rezyfr.dev.repository.WalletRepository
 interface WalletService {
     suspend fun addWallet(wallet: Wallet) : BaseResponse<WalletResponse>
     suspend fun getWalletByUserEmail(email: String) : BaseResponse<List<WalletResponse>>
-    suspend fun updateWalletBalance(walletId: Int, balance: Long) : BaseResponse<WalletResponse>
+    suspend fun updateWalletBalance(walletId: Int, balance: Long, email: String) : BaseResponse<WalletResponse>
 }
 
 class WalletServiceImpl(
@@ -22,8 +22,8 @@ class WalletServiceImpl(
         return BaseResponse(true, "Successfully retrieved wallet", walletRepository.findWalletByUserEmail(email))
     }
 
-    override suspend fun updateWalletBalance(walletId: Int, balance: Long): BaseResponse<WalletResponse> {
-        walletRepository.findWalletById(walletId) ?: throw IllegalArgumentException("Wallet not found")
+    override suspend fun updateWalletBalance(walletId: Int, balance: Long, email: String): BaseResponse<WalletResponse> {
+        walletRepository.findWalletById(walletId, email) ?: throw IllegalArgumentException("Wallet not found")
         return BaseResponse(true, "Successfully updated wallet", walletRepository.updateWalletBalance(walletId, balance))
     }
 }

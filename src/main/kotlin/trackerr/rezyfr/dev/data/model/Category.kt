@@ -1,7 +1,6 @@
 package trackerr.rezyfr.dev.data.model
 
 import kotlinx.serialization.SerialName
-import trackerr.rezyfr.dev.repository.CategoryRepository
 
 data class Category(
     val name: String,

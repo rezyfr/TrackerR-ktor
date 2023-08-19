@@ -12,7 +12,7 @@ import trackerr.rezyfr.dev.repository.DatabaseFactory.dbQuery
 interface WalletRepository {
     suspend fun addWallet(wallet: Wallet): WalletResponse
     suspend fun findWalletByUserEmail(userEmail: String): List<WalletResponse>?
-    suspend fun findWalletById(id: Int): WalletResponse?
+    suspend fun findWalletById(id: Int, userEmail: String): WalletResponse?
     suspend fun updateWalletBalance(id: Int, balance: Long): WalletResponse
 }
 
@@ -40,10 +40,11 @@ class WalletRepositoryImpl : WalletRepository {
         }
     }
 
-    override suspend fun findWalletById(id: Int): WalletResponse? {
+    override suspend fun findWalletById(id: Int, userEmail: String): WalletResponse? {
         return dbQuery {
             WalletTable.select {
                 WalletTable.id.eq(id)
+                WalletTable.userEmail.eq(userEmail)
             }.map {
                 rowToWallet(it)
             }.firstOrNull()
