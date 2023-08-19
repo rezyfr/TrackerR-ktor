@@ -9,6 +9,7 @@ import trackerr.rezyfr.dev.data.model.request.LoginRequest
 import trackerr.rezyfr.dev.data.model.request.RegisterRequest
 import trackerr.rezyfr.dev.data.model.response.ErrorResponse
 import trackerr.rezyfr.dev.service.UserService
+import trackerr.rezyfr.dev.util.PasswordManager
 
 interface UserController {
     suspend fun register(call: ApplicationCall)
@@ -18,11 +19,12 @@ interface UserController {
 
 class UserControllerImpl(
     private val userService: UserService,
+    private val passwordManager: PasswordManager
 ) : UserController {
     override suspend fun register(call: ApplicationCall) {
         try {
             call.receive<RegisterRequest>().apply {
-                userService.createUser(User(email = email, hashPassword = password, name = name)).let {
+                userService.createUser(User(email = email, hashPassword = passwordManager.hash(password), name = name)).let {
                     call.respond(HttpStatusCode.OK, it)
                 }
             }

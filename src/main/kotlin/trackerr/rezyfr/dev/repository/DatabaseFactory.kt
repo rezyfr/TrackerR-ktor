@@ -8,6 +8,7 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import trackerr.rezyfr.dev.data.table.CategoryTable
 import trackerr.rezyfr.dev.data.table.UserTable
 import trackerr.rezyfr.dev.data.table.WalletTable
 
@@ -36,7 +37,16 @@ fun Application.configureDatabase() {
     Database.connect(DatabaseFactory.hikari())
 
     transaction {
+        exec("""
+            DO $$ BEGIN
+                CREATE TYPE CategoryType AS ENUM ('INCOME', 'EXPENSE');
+            EXCEPTION
+                WHEN duplicate_object THEN null;
+            END $$;
+        """.trimIndent())
+
         SchemaUtils.create(UserTable)
         SchemaUtils.create(WalletTable)
+        SchemaUtils.create(CategoryTable)
     }
 }

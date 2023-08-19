@@ -1,13 +1,10 @@
 package trackerr.rezyfr.dev.data.model.request
 
 import kotlinx.serialization.Serializable
+import trackerr.rezyfr.dev.data.model.CategoryType
 
 @Serializable
-data class CreateWalletRequest(
+data class CreateCategoryRequest(
     val name: String,
-    val balance: Long,
-    val color: Long,
-    val icon: String,
+    val type: CategoryType
 )
-
-// Example in json

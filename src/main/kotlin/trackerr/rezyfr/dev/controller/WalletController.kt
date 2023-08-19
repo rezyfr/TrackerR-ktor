@@ -24,16 +24,18 @@ class WalletControllerImpl(
     override suspend fun addWallet(call: ApplicationCall) {
         try {
             call.receive<CreateWalletRequest>().apply {
-                walletService.addWallet(
-                    Wallet(
-                        name = name,
-                        balance = balance,
-                        userEmail = userEmail,
-                        color = color,
-                        icon = icon
-                    )
-                ).let {
-                    call.respond(HttpStatusCode.OK, it)
+                call.principal<User>()!!.let {
+                    walletService.addWallet(
+                        Wallet(
+                            name = name,
+                            balance = balance,
+                            userEmail = it.email,
+                            color = color,
+                            icon = icon
+                        )
+                    ).let {
+                        call.respond(HttpStatusCode.OK, it)
+                    }
                 }
             }
         } catch (e: Exception) {
