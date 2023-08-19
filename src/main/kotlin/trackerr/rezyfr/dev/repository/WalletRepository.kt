@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.update
 import trackerr.rezyfr.dev.data.model.Wallet
 import trackerr.rezyfr.dev.data.model.response.WalletResponse
 import trackerr.rezyfr.dev.data.table.WalletTable
-import trackerr.rezyfr.dev.repository.DatabaseFactory.dbQuery
+import trackerr.rezyfr.dev.db.DatabaseFactory.dbQuery
 
 interface WalletRepository {
     suspend fun addWallet(wallet: Wallet): WalletResponse

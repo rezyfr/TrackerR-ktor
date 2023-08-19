@@ -1,10 +1,11 @@
-package trackerr.rezyfr.dev.repository
+package trackerr.rezyfr.dev.db
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -35,20 +36,18 @@ object DatabaseFactory {
 
 
 fun Application.configureDatabase() {
-    Database.connect(DatabaseFactory.hikari())
+    val pool = DatabaseFactory.hikari()
+    Database.connect(pool)
 
-    transaction {
-        exec("""
-            DO $$ BEGIN
-                CREATE TYPE CategoryType AS ENUM ('INCOME', 'EXPENSE');
-            EXCEPTION
-                WHEN duplicate_object THEN null;
-            END $$;
-        """.trimIndent())
+    val flyway = Flyway.configure()
+        .baselineOnMigrate(true)
+        .dataSource(pool)
+        .load()
 
-        SchemaUtils.create(UserTable)
-        SchemaUtils.create(WalletTable)
-        SchemaUtils.create(CategoryTable)
-        SchemaUtils.create(TransactionTable)
+    try {
+        flyway.info()
+        flyway.migrate()
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 }

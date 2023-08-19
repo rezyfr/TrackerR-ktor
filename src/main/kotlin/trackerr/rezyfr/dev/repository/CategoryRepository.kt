@@ -6,7 +6,7 @@ import trackerr.rezyfr.dev.data.model.CategoryType
 import trackerr.rezyfr.dev.data.model.response.CategoryResponse
 import trackerr.rezyfr.dev.data.table.CategoryTable
 import trackerr.rezyfr.dev.mapper.CategoryMapper
-import trackerr.rezyfr.dev.repository.DatabaseFactory.dbQuery
+import trackerr.rezyfr.dev.db.DatabaseFactory.dbQuery
 
 interface CategoryRepository {
     suspend fun addCategory(category: Category): CategoryResponse

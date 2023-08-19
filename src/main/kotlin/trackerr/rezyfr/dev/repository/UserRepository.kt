@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import trackerr.rezyfr.dev.data.model.User
 import trackerr.rezyfr.dev.data.table.UserTable
-import trackerr.rezyfr.dev.repository.DatabaseFactory.dbQuery
+import trackerr.rezyfr.dev.db.DatabaseFactory.dbQuery
 
 interface UserRepository {
     suspend fun addUser(user: User)

@@ -3,18 +3,16 @@ package trackerr.rezyfr.dev.repository
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.select
 import trackerr.rezyfr.dev.data.model.Category
 import trackerr.rezyfr.dev.data.model.Transaction
-import trackerr.rezyfr.dev.data.model.Wallet
 import trackerr.rezyfr.dev.data.model.response.CategoryResponse
 import trackerr.rezyfr.dev.data.model.response.TransactionResponse
 import trackerr.rezyfr.dev.data.model.response.WalletResponse
 import trackerr.rezyfr.dev.data.table.CategoryTable
 import trackerr.rezyfr.dev.data.table.TransactionTable
 import trackerr.rezyfr.dev.data.table.WalletTable
-import trackerr.rezyfr.dev.repository.DatabaseFactory.dbQuery
+import trackerr.rezyfr.dev.db.DatabaseFactory.dbQuery
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
