@@ -1,11 +1,16 @@
 package trackerr.rezyfr.dev.util
 
+import io.ktor.server.application.*
 import io.ktor.util.*
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
-object PasswordManager {
-    private val hashKey = System.getenv("HASH_KEY").toByteArray()
+class PasswordManager(
+    application: Application
+) {
+
+    private val hashConfig = application.environment.config.config("hash")
+    private val hashKey = hashConfig.property("hash_key").getString().toByteArray()
     private val hmacKey = SecretKeySpec(hashKey, "HmacSHA1")
 
     fun hash(password: String): String {

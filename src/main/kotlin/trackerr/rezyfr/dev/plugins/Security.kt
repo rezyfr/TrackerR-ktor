@@ -6,12 +6,18 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
+import org.kodein.di.DI
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 import trackerr.rezyfr.dev.authentication.JwtService
 import trackerr.rezyfr.dev.controller.UserController
+import trackerr.rezyfr.dev.util.PasswordManager
 
-fun Application.configureSecurity() {
-    val userController by ModulesConfig.kodein.instance<UserController>()
+fun Application.configureSecurity(di: DI) {
+
+    val userController by di.instance<UserController>()
+    val jwtService by di.instance<JwtService>()
+
     data class MySession(val count: Int = 0)
     install(Sessions) {
         cookie<MySession>("MY_SESSION") {
@@ -20,10 +26,10 @@ fun Application.configureSecurity() {
     }
     authentication {
         jwt {
-            verifier(JwtService.verifier)
+            verifier(jwtService.verifier)
             realm = "trackerr.rezyfr.dev"
             validate { credential ->
-                if (credential.payload.audience.contains(JwtService.audience)) {
+                if (credential.payload.audience.contains(jwtService.audience)) {
                     val payload = credential.payload
                     val email = payload.getClaim("email").asString()
                     val user = userController.findUserByEmail(email)

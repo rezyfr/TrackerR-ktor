@@ -7,20 +7,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
-import trackerr.rezyfr.dev.data.table.CategoryTable
-import trackerr.rezyfr.dev.data.table.TransactionTable
-import trackerr.rezyfr.dev.data.table.UserTable
-import trackerr.rezyfr.dev.data.table.WalletTable
 
 object DatabaseFactory {
-    fun hikari(): HikariDataSource {
+    fun hikari(application: Application): HikariDataSource {
+        val dbConfig = application.environment.config.config("database")
+        val dbUser = dbConfig.property("user").getString()
+        val dbPassword = dbConfig.property("password").getString()
+        val poolSize = dbConfig.property("pool_size").getString().toInt()
+        val driver = dbConfig.property("driver").getString()
+        val dbName = dbConfig.property("db_name").getString()
+        val url = "jdbc:postgresql://rain.db.elephantsql.com/$dbName"
+
+        application.log.info("Connecting to db at: $url")
+
         val config = HikariConfig()
-        config.driverClassName = System.getenv("JDBC_DRIVER")
-        config.jdbcUrl =
-            "${System.getenv("DB_URL")}?user=${System.getenv("DB_USER")}&password=${System.getenv("DB_PASSWORD")}"
-        config.maximumPoolSize = 3
+        config.jdbcUrl = url
+        config.maximumPoolSize = poolSize
+        config.driverClassName = driver
+        config.username = dbUser
+        config.password = dbPassword
         config.isAutoCommit = false
         config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
         config.validate()
@@ -36,11 +42,10 @@ object DatabaseFactory {
 
 
 fun Application.configureDatabase() {
-    val pool = DatabaseFactory.hikari()
+    val pool = DatabaseFactory.hikari(this)
     Database.connect(pool)
 
     val flyway = Flyway.configure()
-        .baselineOnMigrate(true)
         .dataSource(pool)
         .load()
 

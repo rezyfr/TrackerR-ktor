@@ -1,5 +1,6 @@
 package trackerr.rezyfr.dev.service
 
+import io.ktor.server.application.*
 import trackerr.rezyfr.dev.authentication.JwtService
 import trackerr.rezyfr.dev.data.model.User
 import trackerr.rezyfr.dev.data.model.response.BaseResponse
@@ -17,7 +18,8 @@ class UserServiceImpl (
     private val userRepository: UserRepository,
     private val categoryRepository: CategoryRepository,
     private val passwordManager: PasswordManager,
-    private val jwtService: JwtService
+    private val jwtService: JwtService,
+    private val application: Application
 ) : UserService{
     override suspend fun createUser(user: User): BaseResponse<String> {
         userRepository.findUserByEmail(user.email)?.let {
@@ -34,13 +36,13 @@ class UserServiceImpl (
         }
         userRepository.addUser(user)
         categoryRepository.populateStarterCategories(user.email)
-        return BaseResponse(true, "Successfully registered", jwtService.generateToken(user))
+        return BaseResponse(true, "Successfully registered", jwtService.generateToken(user, application))
     }
 
     override suspend fun authenticate(email: String, password: String): BaseResponse<String> {
         userRepository.findUserByEmail(email)?.let {
           if (it.hashPassword == passwordManager.hash(password)) {
-              return BaseResponse(true, "Successfully logged in", jwtService.generateToken(it))
+              return BaseResponse(true, "Successfully logged in", jwtService.generateToken(it, application))
           } else {
               throw IllegalArgumentException("Password is incorrect")
           }

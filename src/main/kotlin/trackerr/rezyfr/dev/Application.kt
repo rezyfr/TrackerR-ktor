@@ -1,26 +1,35 @@
 package trackerr.rezyfr.dev
 
 import io.ktor.server.application.*
-import io.ktor.server.engine.*
 import io.ktor.server.locations.*
-import io.ktor.server.netty.*
-import trackerr.rezyfr.dev.plugins.configureRouting
-import trackerr.rezyfr.dev.plugins.configureSecurity
-import trackerr.rezyfr.dev.plugins.configureSerialization
+import org.kodein.di.DI
+import org.kodein.di.bindSingleton
 import trackerr.rezyfr.dev.db.configureDatabase
+import trackerr.rezyfr.dev.plugins.*
 
-fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-            .start(wait = true)
+fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+fun Application.module() {
+    kodeinApplication {
+        install(Locations)
+
+        configureDatabase()
+
+        configureSerialization()
+    }
 }
 
-fun Application.module() {
-    install(Locations)
-
-    configureDatabase()
-
-    configureSecurity()
-    configureSerialization()
-    configureRouting()
-
+fun Application.kodeinApplication(kodeinMapper: DI.MainBuilder.(Application) -> Unit) {
+    val app = this
+    val kodein = DI {
+        bindSingleton<Application> { app }
+        import(authModule)
+        import(mapperModule)
+        import(userModule)
+        import(walletModule)
+        import(categoryModule)
+        import(transactionModule)
+        kodeinMapper(this, app)
+    }
+    configureSecurity(kodein)
+    configureRouting(kodein)
 }

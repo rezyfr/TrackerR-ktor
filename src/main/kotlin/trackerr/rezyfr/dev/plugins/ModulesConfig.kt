@@ -10,46 +10,40 @@ import trackerr.rezyfr.dev.repository.*
 import trackerr.rezyfr.dev.service.*
 import trackerr.rezyfr.dev.util.PasswordManager
 
-object ModulesConfig {
-    private val authModule = DI.Module("AUTH") {
-        bindSingleton { PasswordManager }
-        bindSingleton { JwtService }
-    }
 
-    private val mapperModule = DI.Module("MAPPER") {
-        bindSingleton { CategoryMapper() }
-    }
+val authModule = DI.Module("AUTH") {
+    bindSingleton { PasswordManager(instance()) }
+    bindSingleton { JwtService(instance()) }
+}
 
-    private val userModule = DI.Module("USER") {
-        bindSingleton<UserService> { UserServiceImpl(instance(), instance(), instance(), instance()) }
-        bindSingleton<UserRepository> { UserRepositoryImpl() }
-        bindSingleton<UserController> { UserControllerImpl(instance(), instance()) }
-    }
+val mapperModule = DI.Module("MAPPER") {
+    bindSingleton { CategoryMapper() }
+}
 
-    private val walletModule = DI.Module("WALLET") {
-        bindSingleton<WalletService> { WalletServiceImpl(instance()) }
-        bindSingleton<WalletRepository> { WalletRepositoryImpl() }
-        bindSingleton<WalletController> { WalletControllerImpl(instance()) }
-    }
+val userModule = DI.Module("USER") {
+    bindSingleton<UserService> { UserServiceImpl(instance(), instance(), instance(), instance(), instance()) }
+    bindSingleton<UserRepository> { UserRepositoryImpl() }
+    bindSingleton<UserController> { UserControllerImpl(instance(), instance()) }
+}
 
-    private val categoryModule = DI.Module("CATEGORY") {
-        bindSingleton<CategoryService> { CategoryServiceImpl(instance()) }
-        bindSingleton<CategoryRepository> { CategoryRepositoryImpl(instance()) }
-        bindSingleton<CategoryController> { CategoryControllerImpl(instance()) }
-    }
+val walletModule = DI.Module("WALLET") {
+    bindSingleton<WalletService> { WalletServiceImpl(instance()) }
+    bindSingleton<WalletRepository> { WalletRepositoryImpl() }
+    bindSingleton<WalletController> { WalletControllerImpl(instance()) }
+}
 
-    private val transactionModule = DI.Module("TRANSACTION") {
-        bindSingleton<TransactionService> { TransactionServiceImpl(instance(), instance(), instance()) }
-        bindSingleton<TransactionRepository> { TransactionRepositoryImpl() }
-        bindSingleton<TransactionController> { TransactionControllerImpl(instance()) }
-    }
+val categoryModule = DI.Module("CATEGORY") {
+    bindSingleton<CategoryService> { CategoryServiceImpl(instance()) }
+    bindSingleton<CategoryRepository> { CategoryRepositoryImpl(instance()) }
+    bindSingleton<CategoryController> { CategoryControllerImpl(instance()) }
+}
 
-    internal val kodein = DI {
-        import(authModule)
-        import(mapperModule)
-        import(userModule)
-        import(walletModule)
-        import(categoryModule)
-        import(transactionModule)
-    }
+val transactionModule = DI.Module("TRANSACTION") {
+    bindSingleton<TransactionService> { TransactionServiceImpl(instance(), instance(), instance()) }
+    bindSingleton<TransactionRepository> { TransactionRepositoryImpl() }
+    bindSingleton<TransactionController> { TransactionControllerImpl(instance()) }
+}
+
+internal val kodein = DI {
+
 }

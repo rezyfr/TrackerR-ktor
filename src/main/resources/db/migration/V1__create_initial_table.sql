@@ -1,19 +1,16 @@
-DO $$ BEGIN
-    CREATE TYPE CategoryType AS ENUM ('INCOME', 'EXPENSE');
-EXCEPTION
-    WHEN duplicate_object THEN null;
-END $$;
+CREATE TYPE CategoryType AS ENUM ('INCOME', 'EXPENSE');
 
 create table if not exists "user" (
     name varchar(128) not null,
     email varchar(255) primary key not null,
-    hash_assword varchar(512) not null
+    hash_password varchar(512) not null
 );
 
 create table if not exists category (
     id serial primary key,
     name varchar(255) not null,
-    type CategoryType not null
+    type CategoryType not null,
+    user_email varchar not null references "user" (email)
 );
 
 create table if not exists wallet (
