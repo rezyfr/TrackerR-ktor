@@ -47,6 +47,7 @@ fun Application.configureDatabase() {
 
     val flyway = Flyway.configure()
         .dataSource(pool)
+        .baselineOnMigrate(true)
         .load()
 
     try {

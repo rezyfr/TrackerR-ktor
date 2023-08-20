@@ -21,9 +21,9 @@ data class Category(
     }
 }
 
-enum class CategoryType(val id: Int) {
+enum class CategoryType{
     @SerialName("income")
-    INCOME(1),
+    INCOME,
     @SerialName("expense")
-    EXPENSE(2)
+    EXPENSE
 }
