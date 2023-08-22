@@ -5,10 +5,10 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import trackerr.rezyfr.dev.data.model.Transaction
-import trackerr.rezyfr.dev.data.model.User
-import trackerr.rezyfr.dev.data.model.request.CreateTransactionRequest
-import trackerr.rezyfr.dev.data.model.response.ErrorResponse
+import trackerr.rezyfr.dev.model.Transaction
+import trackerr.rezyfr.dev.model.User
+import trackerr.rezyfr.dev.model.request.CreateTransactionRequest
+import trackerr.rezyfr.dev.model.response.ErrorResponse
 import trackerr.rezyfr.dev.service.TransactionService
 
 interface TransactionController {

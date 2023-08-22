@@ -1,8 +1,8 @@
 package trackerr.rezyfr.dev.service
 
-import trackerr.rezyfr.dev.data.model.Transaction
-import trackerr.rezyfr.dev.data.model.response.BaseResponse
-import trackerr.rezyfr.dev.data.model.response.TransactionResponse
+import trackerr.rezyfr.dev.model.Transaction
+import trackerr.rezyfr.dev.model.response.BaseResponse
+import trackerr.rezyfr.dev.model.response.TransactionResponse
 import trackerr.rezyfr.dev.repository.CategoryRepository
 import trackerr.rezyfr.dev.repository.TransactionRepository
 import trackerr.rezyfr.dev.repository.WalletRepository

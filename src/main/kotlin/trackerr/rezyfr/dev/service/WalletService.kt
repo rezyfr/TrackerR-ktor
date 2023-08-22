@@ -1,8 +1,8 @@
 package trackerr.rezyfr.dev.service
 
-import trackerr.rezyfr.dev.data.model.Wallet
-import trackerr.rezyfr.dev.data.model.response.BaseResponse
-import trackerr.rezyfr.dev.data.model.response.WalletResponse
+import trackerr.rezyfr.dev.model.Wallet
+import trackerr.rezyfr.dev.model.response.BaseResponse
+import trackerr.rezyfr.dev.model.response.WalletResponse
 import trackerr.rezyfr.dev.repository.WalletRepository
 
 interface WalletService {

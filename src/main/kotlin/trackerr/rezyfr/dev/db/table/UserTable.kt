@@ -1,4 +1,4 @@
-package trackerr.rezyfr.dev.data.table
+package trackerr.rezyfr.dev.db.table
 
 import org.jetbrains.exposed.sql.Table
 

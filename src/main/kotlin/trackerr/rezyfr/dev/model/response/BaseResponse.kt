@@ -1,4 +1,4 @@
-package trackerr.rezyfr.dev.data.model.response
+package trackerr.rezyfr.dev.model.response
 
 import kotlinx.serialization.Serializable
 

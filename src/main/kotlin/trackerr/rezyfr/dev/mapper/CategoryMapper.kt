@@ -1,8 +1,8 @@
 package trackerr.rezyfr.dev.mapper
 
 import org.jetbrains.exposed.sql.ResultRow
-import trackerr.rezyfr.dev.data.model.response.CategoryResponse
-import trackerr.rezyfr.dev.data.table.CategoryTable
+import trackerr.rezyfr.dev.model.response.CategoryResponse
+import trackerr.rezyfr.dev.db.table.CategoryTable
 
 class CategoryMapper {
     fun rowsToCategory(rows: List<ResultRow>?): CategoryResponse? {

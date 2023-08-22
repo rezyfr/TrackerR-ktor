@@ -1,9 +1,9 @@
 package trackerr.rezyfr.dev.service
 
-import trackerr.rezyfr.dev.data.model.Category
-import trackerr.rezyfr.dev.data.model.CategoryType
-import trackerr.rezyfr.dev.data.model.response.BaseResponse
-import trackerr.rezyfr.dev.data.model.response.CategoryResponse
+import trackerr.rezyfr.dev.model.Category
+import trackerr.rezyfr.dev.model.CategoryType
+import trackerr.rezyfr.dev.model.response.BaseResponse
+import trackerr.rezyfr.dev.model.response.CategoryResponse
 import trackerr.rezyfr.dev.repository.CategoryRepository
 
 interface CategoryService {

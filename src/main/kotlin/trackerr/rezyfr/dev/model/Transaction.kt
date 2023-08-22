@@ -1,4 +1,4 @@
-package trackerr.rezyfr.dev.data.model
+package trackerr.rezyfr.dev.model
 
 import java.math.BigDecimal
 

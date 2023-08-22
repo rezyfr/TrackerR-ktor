@@ -1,10 +1,10 @@
 package trackerr.rezyfr.dev.repository
 
 import org.jetbrains.exposed.sql.*
-import trackerr.rezyfr.dev.data.model.Category
-import trackerr.rezyfr.dev.data.model.CategoryType
-import trackerr.rezyfr.dev.data.model.response.CategoryResponse
-import trackerr.rezyfr.dev.data.table.CategoryTable
+import trackerr.rezyfr.dev.model.Category
+import trackerr.rezyfr.dev.model.CategoryType
+import trackerr.rezyfr.dev.model.response.CategoryResponse
+import trackerr.rezyfr.dev.db.table.CategoryTable
 import trackerr.rezyfr.dev.mapper.CategoryMapper
 import trackerr.rezyfr.dev.db.DatabaseFactory.dbQuery
 

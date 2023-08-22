@@ -21,7 +21,7 @@ val mapperModule = DI.Module("MAPPER") {
 }
 
 val userModule = DI.Module("USER") {
-    bindSingleton<UserService> { UserServiceImpl(instance(), instance(), instance(), instance(), instance()) }
+    bindSingleton<UserService> { UserServiceImpl(instance(), instance(), instance(), instance()) }
     bindSingleton<UserRepository> { UserRepositoryImpl() }
     bindSingleton<UserController> { UserControllerImpl(instance(), instance()) }
 }

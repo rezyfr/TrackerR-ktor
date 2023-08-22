@@ -5,11 +5,11 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import trackerr.rezyfr.dev.data.model.User
-import trackerr.rezyfr.dev.data.model.Wallet
-import trackerr.rezyfr.dev.data.model.request.CreateWalletRequest
-import trackerr.rezyfr.dev.data.model.request.UpdateWalletBalanceRequest
-import trackerr.rezyfr.dev.data.model.response.ErrorResponse
+import trackerr.rezyfr.dev.model.User
+import trackerr.rezyfr.dev.model.Wallet
+import trackerr.rezyfr.dev.model.request.CreateWalletRequest
+import trackerr.rezyfr.dev.model.request.UpdateWalletBalanceRequest
+import trackerr.rezyfr.dev.model.response.ErrorResponse
 import trackerr.rezyfr.dev.service.WalletService
 
 interface WalletController {

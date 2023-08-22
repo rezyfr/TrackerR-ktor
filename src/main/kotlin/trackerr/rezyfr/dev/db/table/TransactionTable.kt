@@ -1,8 +1,8 @@
-package trackerr.rezyfr.dev.data.table
+package trackerr.rezyfr.dev.db.table
 
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
-import trackerr.rezyfr.dev.data.model.CategoryType
+import trackerr.rezyfr.dev.model.CategoryType
 import trackerr.rezyfr.dev.util.PGEnum
 import java.time.LocalDateTime
 

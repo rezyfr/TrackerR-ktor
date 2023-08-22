@@ -4,9 +4,9 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
-import trackerr.rezyfr.dev.data.model.Wallet
-import trackerr.rezyfr.dev.data.model.response.WalletResponse
-import trackerr.rezyfr.dev.data.table.WalletTable
+import trackerr.rezyfr.dev.model.Wallet
+import trackerr.rezyfr.dev.model.response.WalletResponse
+import trackerr.rezyfr.dev.db.table.WalletTable
 import trackerr.rezyfr.dev.db.DatabaseFactory.dbQuery
 
 interface WalletRepository {

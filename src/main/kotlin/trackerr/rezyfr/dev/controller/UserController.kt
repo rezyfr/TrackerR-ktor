@@ -4,10 +4,10 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import trackerr.rezyfr.dev.data.model.User
-import trackerr.rezyfr.dev.data.model.request.LoginRequest
-import trackerr.rezyfr.dev.data.model.request.RegisterRequest
-import trackerr.rezyfr.dev.data.model.response.ErrorResponse
+import trackerr.rezyfr.dev.model.User
+import trackerr.rezyfr.dev.model.request.LoginRequest
+import trackerr.rezyfr.dev.model.request.RegisterRequest
+import trackerr.rezyfr.dev.model.response.ErrorResponse
 import trackerr.rezyfr.dev.service.UserService
 import trackerr.rezyfr.dev.util.PasswordManager
 

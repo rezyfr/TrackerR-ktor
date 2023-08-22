@@ -5,11 +5,11 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import trackerr.rezyfr.dev.data.model.Category
-import trackerr.rezyfr.dev.data.model.CategoryType
-import trackerr.rezyfr.dev.data.model.User
-import trackerr.rezyfr.dev.data.model.request.CreateCategoryRequest
-import trackerr.rezyfr.dev.data.model.response.ErrorResponse
+import trackerr.rezyfr.dev.model.Category
+import trackerr.rezyfr.dev.model.CategoryType
+import trackerr.rezyfr.dev.model.User
+import trackerr.rezyfr.dev.model.request.CreateCategoryRequest
+import trackerr.rezyfr.dev.model.response.ErrorResponse
 import trackerr.rezyfr.dev.service.CategoryService
 
 interface CategoryController {

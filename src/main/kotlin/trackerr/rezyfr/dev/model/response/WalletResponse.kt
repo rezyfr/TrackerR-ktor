@@ -1,13 +1,12 @@
-package trackerr.rezyfr.dev.data.model.request
+package trackerr.rezyfr.dev.model.response
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CreateWalletRequest(
+data class WalletResponse(
+    val id: Int,
     val name: String,
     val balance: Long,
     val color: Long,
     val icon: String,
 )
-
-// Example in json

@@ -3,8 +3,8 @@ package trackerr.rezyfr.dev.repository
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
-import trackerr.rezyfr.dev.data.model.User
-import trackerr.rezyfr.dev.data.table.UserTable
+import trackerr.rezyfr.dev.model.User
+import trackerr.rezyfr.dev.db.table.UserTable
 import trackerr.rezyfr.dev.db.DatabaseFactory.dbQuery
 
 interface UserRepository {
