@@ -1,13 +1,13 @@
 package trackerr.rezyfr.dev.repository
 
-import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import trackerr.rezyfr.dev.db.table.WalletTable
+import trackerr.rezyfr.dev.mapper.WalletMapper
 import trackerr.rezyfr.dev.model.Wallet
 import trackerr.rezyfr.dev.model.response.WalletResponse
-import trackerr.rezyfr.dev.db.table.WalletTable
 
 interface WalletRepository {
      fun addWallet(wallet: Wallet): WalletResponse
@@ -16,7 +16,9 @@ interface WalletRepository {
      fun updateWalletBalance(id: Int, balance: Long): WalletResponse
 }
 
-class WalletRepositoryImpl : WalletRepository {
+class WalletRepositoryImpl(
+    private val mapper: WalletMapper
+) : WalletRepository {
     override fun addWallet(wallet: Wallet): WalletResponse {
         return transaction {
             val rows = WalletTable.insert {
@@ -26,7 +28,7 @@ class WalletRepositoryImpl : WalletRepository {
                 it[color] = wallet.color
                 it[icon] = wallet.icon
             }.resultedValues
-            rowsToWallet(rows)!!
+            mapper.rowsToWallet(rows)!!
         }
     }
 
@@ -34,9 +36,7 @@ class WalletRepositoryImpl : WalletRepository {
         return transaction {
             WalletTable.select {
                 WalletTable.userEmail.eq(userEmail)
-            }.map {
-                rowToWallet(it)
-            }
+            }.map(mapper::rowToWallet)
         }
     }
 
@@ -45,10 +45,8 @@ class WalletRepositoryImpl : WalletRepository {
             WalletTable.select {
                 WalletTable.id.eq(id)
                 WalletTable.userEmail.eq(userEmail)
-            }.map {
-                rowToWallet(it)
-            }.firstOrNull()
-        }
+            }.map (mapper::rowToWallet)
+        }.firstOrNull()
     }
 
     override fun updateWalletBalance(id: Int, balance: Long): WalletResponse {
@@ -58,31 +56,10 @@ class WalletRepositoryImpl : WalletRepository {
                 it[WalletTable.id] = id
             }
 
-            WalletTable.select { WalletTable.id.eq(id) }.map {
-                rowToWallet(it)
-            }.first()
+            WalletTable
+                .select { WalletTable.id.eq(id) }
+                .map (mapper::rowToWallet)
+                .first()
         }
-    }
-
-    private fun rowsToWallet(rows: List<ResultRow>?): WalletResponse? {
-        return rows?.firstOrNull()?.let {
-            WalletResponse(
-                id = it[WalletTable.id],
-                name = it[WalletTable.name],
-                balance = it[WalletTable.balance],
-                color = it[WalletTable.color],
-                icon = it[WalletTable.icon]
-            )
-        }
-    }
-
-    private fun rowToWallet(row: ResultRow): WalletResponse {
-        return WalletResponse(
-            id = row[WalletTable.id],
-            name = row[WalletTable.name],
-            balance = row[WalletTable.balance],
-            color = row[WalletTable.color],
-            icon = row[WalletTable.icon]
-        )
     }
 }

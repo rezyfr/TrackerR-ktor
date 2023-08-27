@@ -22,7 +22,7 @@ class CategoryRepositoryImpl(
         return transaction {
             val rows = CategoryTable.insert {
                 it[name] = category.name
-                it[type] = category.type
+                it[type] = category.type.toString()
                 it[userEmail] = category.userEmail
             }.resultedValues
             mapper.rowsToCategory(rows)!!
@@ -32,7 +32,7 @@ class CategoryRepositoryImpl(
     override fun getCategories(userEmail: String, type: CategoryType): List<CategoryResponse> {
         return transaction {
             CategoryTable.select {
-                CategoryTable.userEmail.eq(userEmail) and CategoryTable.type.eq(type)
+                CategoryTable.userEmail.eq(userEmail) and CategoryTable.type.eq(type.toString())
             }.map {
                 mapper.rowToCategory(it)
             }
@@ -41,14 +41,10 @@ class CategoryRepositoryImpl(
 
     override fun populateStarterCategories(userEmail: String) {
         transaction {
-            try {
-                CategoryTable.batchInsert(data = Category.getInitialCategories(userEmail), shouldReturnGeneratedValues = false) {
-                    this[CategoryTable.name] = it.name
-                    this[CategoryTable.type] = it.type
-                    this[CategoryTable.userEmail] = it.userEmail
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            CategoryTable.batchInsert(data = Category.getInitialCategories(userEmail), shouldReturnGeneratedValues = false) {
+                this[CategoryTable.name] = it.name
+                this[CategoryTable.type] = it.type.toString()
+                this[CategoryTable.userEmail] = it.userEmail
             }
         }
     }

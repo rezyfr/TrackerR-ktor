@@ -21,9 +21,9 @@ data class Category(
     }
 }
 
-enum class CategoryType{
+enum class CategoryType {
     @SerialName("income")
     INCOME,
     @SerialName("expense")
-    EXPENSE
+    EXPENSE;
 }

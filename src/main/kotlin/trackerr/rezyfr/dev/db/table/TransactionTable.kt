@@ -13,7 +13,7 @@ object TransactionTable : Table() {
     val date = datetime("created_at").clientDefault { LocalDateTime.now() }
     val walletId = integer("wallet_id").references(WalletTable.id)
     val categoryId = integer("category_id").references(CategoryTable.id)
-    val type = customEnumeration("type", "CategoryType", { value -> CategoryType.valueOf(value as String) }, { PGEnum("CategoryType", it) })
+    val type = varchar("type", 7)
     val userEmail = varchar("user_email", 128).references(UserTable.email)
 
     override val primaryKey = PrimaryKey(id)

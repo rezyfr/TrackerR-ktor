@@ -24,17 +24,22 @@ abstract class BaseRepositoryTest {
 
     fun withTables(vararg tables: Table, statement: Transaction.() -> Unit) {
         transaction {
-            SchemaUtils.create(*tables)
+            try {
+                exec("CREATE TYPE IF NOT EXISTS CategoryType AS ENUM ('INCOME', 'EXPENSE');")
+                SchemaUtils.create(*tables)
 
-            statement()
-            commit()
+                statement()
+                commit()
+            } finally {
+                SchemaUtils.drop(*tables)
+            }
         }
     }
 
-    @AfterAll
-    open fun tearDown() {
-        transaction {
-            SchemaUtils.drop(*arrayOf(UserTable, WalletTable, CategoryTable, TransactionTable))
-        }
-    }
+//    @AfterAll
+//    open fun tearDown() {
+//        transaction {
+//            SchemaUtils.drop(*arrayOf(UserTable, WalletTable, CategoryTable, TransactionTable))
+//        }
+//    }
 }

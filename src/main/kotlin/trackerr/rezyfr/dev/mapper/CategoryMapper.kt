@@ -3,6 +3,7 @@ package trackerr.rezyfr.dev.mapper
 import org.jetbrains.exposed.sql.ResultRow
 import trackerr.rezyfr.dev.model.response.CategoryResponse
 import trackerr.rezyfr.dev.db.table.CategoryTable
+import trackerr.rezyfr.dev.model.CategoryType
 
 class CategoryMapper {
     fun rowsToCategory(rows: List<ResultRow>?): CategoryResponse? {
@@ -10,7 +11,7 @@ class CategoryMapper {
             CategoryResponse(
                 id = it[CategoryTable.id],
                 name = it[CategoryTable.name],
-                type = it[CategoryTable.type]
+                type = CategoryType.valueOf(it[CategoryTable.type])
             )
         }?.firstOrNull()
     }
@@ -20,7 +21,7 @@ class CategoryMapper {
             CategoryResponse(
                 id = it[CategoryTable.id],
                 name = it[CategoryTable.name],
-                type = it[CategoryTable.type]
+                type = CategoryType.valueOf(it[CategoryTable.type])
             )
         }
     }
