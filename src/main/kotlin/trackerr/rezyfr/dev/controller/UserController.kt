@@ -12,9 +12,9 @@ import trackerr.rezyfr.dev.service.UserService
 import trackerr.rezyfr.dev.util.PasswordManager
 
 interface UserController {
-    suspend fun register(call: ApplicationCall)
-    suspend fun login(call: ApplicationCall)
-    suspend fun findUserByEmail(email: String): User?
+     suspend fun register(call: ApplicationCall)
+     suspend fun login(call: ApplicationCall)
+     fun findUserByEmail(email: String): User?
 }
 
 class UserControllerImpl(
@@ -45,7 +45,7 @@ class UserControllerImpl(
         }
     }
 
-    override suspend fun findUserByEmail(email: String): User? {
+    override fun findUserByEmail(email: String): User? {
         return userService.findUserByEmail(email)
     }
 }

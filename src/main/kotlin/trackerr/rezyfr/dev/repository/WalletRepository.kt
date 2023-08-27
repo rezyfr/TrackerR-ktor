@@ -3,22 +3,22 @@ package trackerr.rezyfr.dev.repository
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import trackerr.rezyfr.dev.model.Wallet
 import trackerr.rezyfr.dev.model.response.WalletResponse
 import trackerr.rezyfr.dev.db.table.WalletTable
-import trackerr.rezyfr.dev.db.DatabaseFactory.dbQuery
 
 interface WalletRepository {
-    suspend fun addWallet(wallet: Wallet): WalletResponse
-    suspend fun findWalletByUserEmail(userEmail: String): List<WalletResponse>?
-    suspend fun findWalletById(id: Int, userEmail: String): WalletResponse?
-    suspend fun updateWalletBalance(id: Int, balance: Long): WalletResponse
+     fun addWallet(wallet: Wallet): WalletResponse
+     fun findWalletByUserEmail(userEmail: String): List<WalletResponse>?
+     fun findWalletById(id: Int, userEmail: String): WalletResponse?
+     fun updateWalletBalance(id: Int, balance: Long): WalletResponse
 }
 
 class WalletRepositoryImpl : WalletRepository {
-    override suspend fun addWallet(wallet: Wallet): WalletResponse {
-        return dbQuery {
+    override fun addWallet(wallet: Wallet): WalletResponse {
+        return transaction {
             val rows = WalletTable.insert {
                 it[name] = wallet.name
                 it[balance] = wallet.balance
@@ -30,8 +30,8 @@ class WalletRepositoryImpl : WalletRepository {
         }
     }
 
-    override suspend fun findWalletByUserEmail(userEmail: String): List<WalletResponse>? {
-        return dbQuery {
+    override fun findWalletByUserEmail(userEmail: String): List<WalletResponse>? {
+        return transaction {
             WalletTable.select {
                 WalletTable.userEmail.eq(userEmail)
             }.map {
@@ -40,8 +40,8 @@ class WalletRepositoryImpl : WalletRepository {
         }
     }
 
-    override suspend fun findWalletById(id: Int, userEmail: String): WalletResponse? {
-        return dbQuery {
+    override fun findWalletById(id: Int, userEmail: String): WalletResponse? {
+        return transaction {
             WalletTable.select {
                 WalletTable.id.eq(id)
                 WalletTable.userEmail.eq(userEmail)
@@ -51,8 +51,8 @@ class WalletRepositoryImpl : WalletRepository {
         }
     }
 
-    override suspend fun updateWalletBalance(id: Int, balance: Long): WalletResponse {
-        return dbQuery {
+    override fun updateWalletBalance(id: Int, balance: Long): WalletResponse {
+        return transaction {
             WalletTable.update {
                 it[WalletTable.balance] = balance
                 it[WalletTable.id] = id

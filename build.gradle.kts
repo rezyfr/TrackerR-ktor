@@ -8,6 +8,7 @@ val hikari_version: String by project
 val exposed_version: String by project
 val kodein_version: String by project
 val flyway_version: String by project
+val junit_version: String by project
 plugins {
     kotlin("jvm") version "1.9.0"
     id("io.ktor.plugin") version "2.3.3"
@@ -45,8 +46,6 @@ dependencies {
     implementation("com.h2database:h2:$h2_version")
     implementation("io.ktor:ktor-server-netty-jvm")
     implementation("ch.qos.logback:logback-classic:$logback_version")
-    testImplementation("io.ktor:ktor-server-tests-jvm")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
     // Database
     implementation("org.postgresql:postgresql:$postgres_version")
@@ -61,4 +60,21 @@ dependencies {
 
     // DI
     implementation("org.kodein.di:kodein-di:$kodein_version")
+
+    testImplementation("io.ktor:ktor-server-tests-jvm")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+    testImplementation("org.assertj:assertj-core:3.24.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:$junit_version")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit_version")
+    testImplementation("io.mockk:mockk:1.13.4")
+}
+
+tasks {
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+        }
+    }
 }

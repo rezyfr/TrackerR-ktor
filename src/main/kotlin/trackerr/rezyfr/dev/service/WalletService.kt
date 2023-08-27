@@ -6,23 +6,23 @@ import trackerr.rezyfr.dev.model.response.WalletResponse
 import trackerr.rezyfr.dev.repository.WalletRepository
 
 interface WalletService {
-    suspend fun addWallet(wallet: Wallet) : BaseResponse<WalletResponse>
-    suspend fun getWalletByUserEmail(email: String) : BaseResponse<List<WalletResponse>>
-    suspend fun updateWalletBalance(walletId: Int, balance: Long, email: String) : BaseResponse<WalletResponse>
+     fun addWallet(wallet: Wallet) : BaseResponse<WalletResponse>
+     fun getWalletByUserEmail(email: String) : BaseResponse<List<WalletResponse>>
+     fun updateWalletBalance(walletId: Int, balance: Long, email: String) : BaseResponse<WalletResponse>
 }
 
 class WalletServiceImpl(
     private val walletRepository: WalletRepository,
 ) : WalletService {
-    override suspend fun addWallet(wallet: Wallet): BaseResponse<WalletResponse> {
+    override fun addWallet(wallet: Wallet): BaseResponse<WalletResponse> {
         return BaseResponse(true, "Successfully added wallet", walletRepository.addWallet(wallet))
     }
 
-    override suspend fun getWalletByUserEmail(email: String): BaseResponse<List<WalletResponse>> {
+    override fun getWalletByUserEmail(email: String): BaseResponse<List<WalletResponse>> {
         return BaseResponse(true, "Successfully retrieved wallet", walletRepository.findWalletByUserEmail(email))
     }
 
-    override suspend fun updateWalletBalance(walletId: Int, balance: Long, email: String): BaseResponse<WalletResponse> {
+    override fun updateWalletBalance(walletId: Int, balance: Long, email: String): BaseResponse<WalletResponse> {
         walletRepository.findWalletById(walletId, email) ?: throw IllegalArgumentException("Wallet not found")
         return BaseResponse(true, "Successfully updated wallet", walletRepository.updateWalletBalance(walletId, balance))
     }

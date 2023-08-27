@@ -13,9 +13,9 @@ import trackerr.rezyfr.dev.model.response.ErrorResponse
 import trackerr.rezyfr.dev.service.WalletService
 
 interface WalletController {
-    suspend fun addWallet(call: ApplicationCall)
-    suspend fun getWallets(call: ApplicationCall)
-    suspend fun updateWalletBalance(call: ApplicationCall)
+     suspend fun addWallet(call: ApplicationCall)
+     suspend fun getWallets(call: ApplicationCall)
+     suspend fun updateWalletBalance(call: ApplicationCall)
 }
 
 class WalletControllerImpl(

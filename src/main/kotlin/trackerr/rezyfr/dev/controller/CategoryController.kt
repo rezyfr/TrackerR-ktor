@@ -13,8 +13,8 @@ import trackerr.rezyfr.dev.model.response.ErrorResponse
 import trackerr.rezyfr.dev.service.CategoryService
 
 interface CategoryController {
-    suspend fun addCategory(call: ApplicationCall)
-    suspend fun getCategories(call: ApplicationCall)
+     suspend fun addCategory(call: ApplicationCall)
+     suspend fun getCategories(call: ApplicationCall)
 }
 
 class CategoryControllerImpl(

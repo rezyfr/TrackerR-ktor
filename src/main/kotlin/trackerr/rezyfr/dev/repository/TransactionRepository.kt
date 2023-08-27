@@ -4,6 +4,7 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 import trackerr.rezyfr.dev.model.Category
 import trackerr.rezyfr.dev.model.Transaction
 import trackerr.rezyfr.dev.model.response.CategoryResponse
@@ -12,29 +13,28 @@ import trackerr.rezyfr.dev.model.response.WalletResponse
 import trackerr.rezyfr.dev.db.table.CategoryTable
 import trackerr.rezyfr.dev.db.table.TransactionTable
 import trackerr.rezyfr.dev.db.table.WalletTable
-import trackerr.rezyfr.dev.db.DatabaseFactory.dbQuery
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 interface TransactionRepository {
-    suspend fun addTransaction(
+     fun addTransaction(
         transaction: Transaction,
         category: CategoryResponse,
         wallet: WalletResponse,
         email: String
     ): TransactionResponse
 
-    suspend fun getRecentTransaction(email: String): List<TransactionResponse>
+     fun getRecentTransaction(email: String): List<TransactionResponse>
 }
 
 class TransactionRepositoryImpl : TransactionRepository {
-    override suspend fun addTransaction(
+    override fun addTransaction(
         transaction: Transaction,
         category: CategoryResponse,
         wallet: WalletResponse,
         email: String
     ): TransactionResponse {
-        return dbQuery {
+        return transaction {
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             val rows = TransactionTable.insert {
                 it[amount] = transaction.amount
@@ -49,8 +49,8 @@ class TransactionRepositoryImpl : TransactionRepository {
         }
     }
 
-    override suspend fun getRecentTransaction(email: String): List<TransactionResponse> {
-        return dbQuery {
+    override fun getRecentTransaction(email: String): List<TransactionResponse> {
+        return transaction {
             TransactionTable.select { TransactionTable.userEmail.eq(email) }.orderBy(TransactionTable.id to SortOrder.DESC).limit(3).map { trxRow ->
                 val cat = CategoryTable.select { CategoryTable.id.eq(trxRow[TransactionTable.categoryId]) }.first().let { catRow ->
                     Category(

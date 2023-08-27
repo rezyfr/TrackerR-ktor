@@ -12,8 +12,8 @@ import trackerr.rezyfr.dev.model.response.ErrorResponse
 import trackerr.rezyfr.dev.service.TransactionService
 
 interface TransactionController {
-    suspend fun addTransaction(call: ApplicationCall)
-    suspend fun getRecentTransactions(call: ApplicationCall)
+     suspend fun addTransaction(call: ApplicationCall)
+     suspend fun getRecentTransactions(call: ApplicationCall)
 }
 
 class TransactionControllerImpl(

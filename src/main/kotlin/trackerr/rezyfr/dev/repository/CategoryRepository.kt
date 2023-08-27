@@ -1,25 +1,25 @@
 package trackerr.rezyfr.dev.repository
 
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
 import trackerr.rezyfr.dev.model.Category
 import trackerr.rezyfr.dev.model.CategoryType
 import trackerr.rezyfr.dev.model.response.CategoryResponse
 import trackerr.rezyfr.dev.db.table.CategoryTable
 import trackerr.rezyfr.dev.mapper.CategoryMapper
-import trackerr.rezyfr.dev.db.DatabaseFactory.dbQuery
 
 interface CategoryRepository {
-    suspend fun addCategory(category: Category): CategoryResponse
-    suspend fun getCategories(userEmail: String, type: CategoryType): List<CategoryResponse>
-    suspend fun populateStarterCategories(userEmail: String)
-    suspend fun getCategoryById(id: Int, userEmail: String): CategoryResponse?
+     fun addCategory(category: Category): CategoryResponse
+     fun getCategories(userEmail: String, type: CategoryType): List<CategoryResponse>
+     fun populateStarterCategories(userEmail: String)
+     fun getCategoryById(id: Int, userEmail: String): CategoryResponse?
 }
 
 class CategoryRepositoryImpl(
     private val mapper: CategoryMapper
 ) : CategoryRepository {
-    override suspend fun addCategory(category: Category): CategoryResponse {
-        return dbQuery {
+    override fun addCategory(category: Category): CategoryResponse {
+        return transaction {
             val rows = CategoryTable.insert {
                 it[name] = category.name
                 it[type] = category.type
@@ -29,8 +29,8 @@ class CategoryRepositoryImpl(
         }
     }
 
-    override suspend fun getCategories(userEmail: String, type: CategoryType): List<CategoryResponse> {
-        return dbQuery {
+    override fun getCategories(userEmail: String, type: CategoryType): List<CategoryResponse> {
+        return transaction {
             CategoryTable.select {
                 CategoryTable.userEmail.eq(userEmail) and CategoryTable.type.eq(type)
             }.map {
@@ -39,8 +39,8 @@ class CategoryRepositoryImpl(
         }
     }
 
-    override suspend fun populateStarterCategories(userEmail: String) {
-        dbQuery {
+    override fun populateStarterCategories(userEmail: String) {
+        transaction {
             try {
                 CategoryTable.batchInsert(data = Category.getInitialCategories(userEmail), shouldReturnGeneratedValues = false) {
                     this[CategoryTable.name] = it.name
@@ -53,8 +53,8 @@ class CategoryRepositoryImpl(
         }
     }
 
-    override suspend fun getCategoryById(id: Int, userEmail: String): CategoryResponse? {
-        return dbQuery {
+    override fun getCategoryById(id: Int, userEmail: String): CategoryResponse? {
+        return transaction {
             CategoryTable.select {
                 CategoryTable.id.eq(id)
                 CategoryTable.userEmail.eq(userEmail)

@@ -9,9 +9,9 @@ import trackerr.rezyfr.dev.repository.UserRepository
 import trackerr.rezyfr.dev.util.PasswordManager
 
 interface UserService {
-    suspend fun createUser(user: User): BaseResponse<String>
-    suspend fun authenticate(email: String, password: String): BaseResponse<String>
-    suspend fun findUserByEmail(email: String): User?
+     fun createUser(user: User): BaseResponse<String>
+     fun authenticate(email: String, password: String): BaseResponse<String>
+     fun findUserByEmail(email: String): User?
 }
 
 class UserServiceImpl (
@@ -20,7 +20,7 @@ class UserServiceImpl (
     private val passwordManager: PasswordManager,
     private val jwtService: JwtService,
 ) : UserService{
-    override suspend fun createUser(user: User): BaseResponse<String> {
+    override fun createUser(user: User): BaseResponse<String> {
         userRepository.findUserByEmail(user.email)?.let {
             throw IllegalArgumentException("User with email ${user.email} already exists")
         }
@@ -38,7 +38,7 @@ class UserServiceImpl (
         return BaseResponse(true, "Successfully registered", jwtService.generateToken(user))
     }
 
-    override suspend fun authenticate(email: String, password: String): BaseResponse<String> {
+    override fun authenticate(email: String, password: String): BaseResponse<String> {
         userRepository.findUserByEmail(email)?.let {
           if (it.hashPassword == passwordManager.hash(password)) {
               return BaseResponse(true, "Successfully logged in", jwtService.generateToken(it))
@@ -49,7 +49,7 @@ class UserServiceImpl (
         throw IllegalArgumentException("User with email $email not found")
     }
 
-    override suspend fun findUserByEmail(email: String): User? {
+    override fun findUserByEmail(email: String): User? {
         return userRepository.findUserByEmail(email)
     }
 }
