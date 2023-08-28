@@ -24,7 +24,7 @@
 - [ElephantSQL](https://www.elephantsql.com/) for PostgreSQL hosting
 - [Fly.io](https://fly.io/) for API hosting
 
-## API
+## API (WiP)
 `GET Example /v1/example` --> get example data
 ```json
 {
