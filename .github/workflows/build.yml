@@ -26,6 +26,8 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build
+      - name: Generate kover coverage report
+        run: ./gradlew koverXmlReport
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
         with:
