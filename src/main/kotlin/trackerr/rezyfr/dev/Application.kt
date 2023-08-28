@@ -5,7 +5,7 @@ import io.ktor.server.locations.*
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import trackerr.rezyfr.dev.db.configureDatabase
-import trackerr.rezyfr.dev.plugins.*
+import trackerr.rezyfr.dev.config.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module() {

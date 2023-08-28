@@ -1,7 +1,6 @@
-package trackerr.rezyfr.dev.plugins
+package trackerr.rezyfr.dev.config
 
 import io.ktor.server.application.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.kodein.di.DI

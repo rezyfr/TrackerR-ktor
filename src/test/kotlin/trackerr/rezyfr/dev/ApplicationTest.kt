@@ -5,7 +5,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlin.test.*
-import trackerr.rezyfr.dev.plugins.*
 
 class ApplicationTest {
     @Test

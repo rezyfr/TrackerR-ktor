@@ -1,9 +1,9 @@
-package trackerr.rezyfr.dev.plugins
+package trackerr.rezyfr.dev.config
 
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import trackerr.rezyfr.dev.authentication.JwtService
+import trackerr.rezyfr.dev.util.JwtService
 import trackerr.rezyfr.dev.controller.*
 import trackerr.rezyfr.dev.mapper.CategoryMapper
 import trackerr.rezyfr.dev.mapper.TransactionMapper

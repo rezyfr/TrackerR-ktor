@@ -1,10 +1,10 @@
 package trackerr.rezyfr.dev.service
 
-import trackerr.rezyfr.dev.authentication.JwtService
 import trackerr.rezyfr.dev.model.User
 import trackerr.rezyfr.dev.model.response.BaseResponse
 import trackerr.rezyfr.dev.repository.CategoryRepository
 import trackerr.rezyfr.dev.repository.UserRepository
+import trackerr.rezyfr.dev.util.JwtService
 import trackerr.rezyfr.dev.util.PasswordManager
 
 interface UserService {

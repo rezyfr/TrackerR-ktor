@@ -5,10 +5,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
-import trackerr.rezyfr.dev.authentication.JwtService
 import trackerr.rezyfr.dev.model.User
 import trackerr.rezyfr.dev.repository.CategoryRepository
 import trackerr.rezyfr.dev.repository.UserRepository
+import trackerr.rezyfr.dev.util.JwtService
 import trackerr.rezyfr.dev.util.PasswordManager
 
 

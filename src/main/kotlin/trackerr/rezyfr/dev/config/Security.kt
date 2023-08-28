@@ -1,4 +1,4 @@
-package trackerr.rezyfr.dev.plugins
+package trackerr.rezyfr.dev.config
 
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -7,11 +7,9 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import org.kodein.di.DI
-import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import trackerr.rezyfr.dev.authentication.JwtService
+import trackerr.rezyfr.dev.util.JwtService
 import trackerr.rezyfr.dev.controller.UserController
-import trackerr.rezyfr.dev.util.PasswordManager
 
 fun Application.configureSecurity(di: DI) {
 

@@ -1,4 +1,4 @@
-package trackerr.rezyfr.dev.authentication
+package trackerr.rezyfr.dev.util
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
