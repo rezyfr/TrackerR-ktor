@@ -22,13 +22,31 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
       - name: Build with Gradle
         run: ./gradlew build
+
       - name: Generate kover coverage report
         run: ./gradlew koverXmlReport
+        uses: actions/upload-artifact@v2
+        with:
+          name: kover-report
+          path: build/reports/kover
+
+      - name: Download Test Reports Folder
+        uses: actions/download-artifact@v2
+        with:
+          name: kover-report
+          path: build/reports/kover
+
+      - name: Upload Test Report
+        run: bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN }} -f "build/reports/kover/report.xml"
+
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
         with:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
           files: build/reports/kover/report.xml
