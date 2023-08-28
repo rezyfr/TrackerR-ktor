@@ -1,6 +1,5 @@
 package trackerr.rezyfr.dev.service
 
-import io.ktor.server.application.*
 import trackerr.rezyfr.dev.authentication.JwtService
 import trackerr.rezyfr.dev.model.User
 import trackerr.rezyfr.dev.model.response.BaseResponse
