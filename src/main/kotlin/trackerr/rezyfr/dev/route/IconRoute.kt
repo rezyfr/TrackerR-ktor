@@ -6,7 +6,7 @@ import io.ktor.server.routing.*
 import trackerr.rezyfr.dev.controller.IconController
 
 const val GET_ICON = "$API_VERSION/icon"
-const val ADD_ICON = "$API_VERSION/icon"
+const val ADD_ICON = "$API_VERSION/icon/create"
 
 @Location(GET_ICON)
 class GetIconRoute
