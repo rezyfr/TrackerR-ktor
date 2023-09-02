@@ -28,6 +28,7 @@ fun Application.kodeinApplication(kodeinMapper: DI.MainBuilder.(Application) -> 
         import(walletModule)
         import(categoryModule)
         import(transactionModule)
+        import(iconModule)
         kodeinMapper(this, app)
     }
     configureSecurity(kodein)

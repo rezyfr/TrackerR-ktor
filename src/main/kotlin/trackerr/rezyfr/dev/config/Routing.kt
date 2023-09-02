@@ -5,20 +5,15 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.kodein.di.DI
 import org.kodein.di.instance
-import trackerr.rezyfr.dev.controller.CategoryController
-import trackerr.rezyfr.dev.controller.TransactionController
-import trackerr.rezyfr.dev.controller.UserController
-import trackerr.rezyfr.dev.controller.WalletController
-import trackerr.rezyfr.dev.route.categoryRoutes
-import trackerr.rezyfr.dev.route.transactionRoutes
-import trackerr.rezyfr.dev.route.userRoutes
-import trackerr.rezyfr.dev.route.walletRoutes
+import trackerr.rezyfr.dev.controller.*
+import trackerr.rezyfr.dev.route.*
 
 fun Application.configureRouting(di: DI) {
     val userController: UserController by di.instance()
     val walletController by di.instance<WalletController>()
     val categoryController by di.instance<CategoryController>()
     val transactionController by di.instance<TransactionController>()
+    val iconController by di.instance<IconController>()
 
     routing {
         get("/") {
@@ -29,5 +24,6 @@ fun Application.configureRouting(di: DI) {
         walletRoutes(walletController)
         categoryRoutes(categoryController)
         transactionRoutes(transactionController)
+        iconRoutes(iconController)
     }
 }

@@ -6,6 +6,7 @@ import org.kodein.di.instance
 import trackerr.rezyfr.dev.util.JwtService
 import trackerr.rezyfr.dev.controller.*
 import trackerr.rezyfr.dev.mapper.CategoryMapper
+import trackerr.rezyfr.dev.mapper.IconMapper
 import trackerr.rezyfr.dev.mapper.TransactionMapper
 import trackerr.rezyfr.dev.mapper.WalletMapper
 import trackerr.rezyfr.dev.repository.*
@@ -22,6 +23,7 @@ val mapperModule = DI.Module("MAPPER") {
     bindSingleton { CategoryMapper() }
     bindSingleton { WalletMapper() }
     bindSingleton { TransactionMapper() }
+    bindSingleton { IconMapper() }
 }
 
 val userModule = DI.Module("USER") {
@@ -46,4 +48,10 @@ val transactionModule = DI.Module("TRANSACTION") {
     bindSingleton<TransactionService> { TransactionServiceImpl(instance(), instance(), instance()) }
     bindSingleton<TransactionRepository> { TransactionRepositoryImpl(instance()) }
     bindSingleton<TransactionController> { TransactionControllerImpl(instance()) }
+}
+
+val iconModule = DI.Module("ICON") {
+    bindSingleton<IconService> { IconServiceImpl(instance()) }
+    bindSingleton<IconRepository> { IconRepositoryImpl(instance()) }
+    bindSingleton<IconController> { IconControllerImpl(instance()) }
 }
