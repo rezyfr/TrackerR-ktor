@@ -5,5 +5,5 @@ data class Wallet(
     val balance: Long,
     val userEmail: String,
     val color: Long,
-    val icon: String
+    val iconId: Int
 )

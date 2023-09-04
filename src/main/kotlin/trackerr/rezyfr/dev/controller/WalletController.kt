@@ -31,7 +31,7 @@ class WalletControllerImpl(
                             balance = balance,
                             userEmail = it.email,
                             color = color,
-                            icon = icon
+                            iconId = iconId
                         )
                     ).let {
                         call.respond(HttpStatusCode.OK, it)

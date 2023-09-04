@@ -7,7 +7,7 @@ data class CreateWalletRequest(
     val name: String,
     val balance: Long,
     val color: Long,
-    val icon: String,
+    val iconId: Int,
 )
 
 // Example in json

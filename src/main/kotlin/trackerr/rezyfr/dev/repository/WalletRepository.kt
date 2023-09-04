@@ -4,20 +4,23 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import trackerr.rezyfr.dev.db.table.IconTable
 import trackerr.rezyfr.dev.db.table.WalletTable
+import trackerr.rezyfr.dev.mapper.IconMapper
 import trackerr.rezyfr.dev.mapper.WalletMapper
 import trackerr.rezyfr.dev.model.Wallet
 import trackerr.rezyfr.dev.model.response.WalletResponse
 
 interface WalletRepository {
-     fun addWallet(wallet: Wallet): WalletResponse
-     fun findWalletByUserEmail(userEmail: String): List<WalletResponse>?
-     fun findWalletById(id: Int, userEmail: String): WalletResponse?
-     fun updateWalletBalance(id: Int, balance: Long): WalletResponse
+    fun addWallet(wallet: Wallet): WalletResponse
+    fun findWalletByUserEmail(userEmail: String): List<WalletResponse>?
+    fun findWalletById(id: Int, userEmail: String): WalletResponse?
+    fun updateWalletBalance(id: Int, balance: Long): WalletResponse
 }
 
 class WalletRepositoryImpl(
-    private val mapper: WalletMapper
+    private val mapper: WalletMapper,
+    private val iconMapper: IconMapper
 ) : WalletRepository {
     override fun addWallet(wallet: Wallet): WalletResponse {
         return transaction {
@@ -26,9 +29,10 @@ class WalletRepositoryImpl(
                 it[balance] = wallet.balance
                 it[userEmail] = wallet.userEmail
                 it[color] = wallet.color
-                it[icon] = wallet.icon
+                it[icon] = wallet.iconId
             }.resultedValues
-            mapper.rowsToWallet(rows)!!
+
+            mapper.rowsToWallet(rows, icon = { getIconUrl(it) })!!
         }
     }
 
@@ -36,7 +40,9 @@ class WalletRepositoryImpl(
         return transaction {
             WalletTable.select {
                 WalletTable.userEmail.eq(userEmail)
-            }.map(mapper::rowToWallet)
+            }.map {
+                mapper.rowToWallet(it, icon = { getIconUrl(it) })
+            }
         }
     }
 
@@ -45,7 +51,9 @@ class WalletRepositoryImpl(
             WalletTable.select {
                 WalletTable.id.eq(id)
                 WalletTable.userEmail.eq(userEmail)
-            }.map (mapper::rowToWallet)
+            }.map {
+                mapper.rowToWallet(it, icon = { getIconUrl(it) })
+            }
         }.firstOrNull()
     }
 
@@ -58,8 +66,16 @@ class WalletRepositoryImpl(
 
             WalletTable
                 .select { WalletTable.id.eq(id) }
-                .map (mapper::rowToWallet)
+                .map {
+                    mapper.rowToWallet(it, icon = { getIconUrl(it) })
+                }
                 .first()
+        }
+    }
+
+    private fun getIconUrl(id: Int): String {
+        return IconTable.select { IconTable.id.eq(id) }.first().let { icon ->
+            iconMapper.rowToIcon(icon).url
         }
     }
 }

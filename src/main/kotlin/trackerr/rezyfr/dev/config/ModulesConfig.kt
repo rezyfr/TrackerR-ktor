@@ -34,7 +34,7 @@ val userModule = DI.Module("USER") {
 
 val walletModule = DI.Module("WALLET") {
     bindSingleton<WalletService> { WalletServiceImpl(instance()) }
-    bindSingleton<WalletRepository> { WalletRepositoryImpl(instance()) }
+    bindSingleton<WalletRepository> { WalletRepositoryImpl(instance(), instance()) }
     bindSingleton<WalletController> { WalletControllerImpl(instance()) }
 }
 
