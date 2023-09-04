@@ -33,7 +33,7 @@ class CategoryServiceTest {
         val result = categoryService.addCategory(Category("test", "email@mail.com", CategoryType.EXPENSE))
         coVerify(exactly = 1) { categoryRepository.addCategory(any()) }
 
-        assert(result.success == true)
+        assert(result.status == true)
     }
 
     @Test
@@ -53,7 +53,7 @@ class CategoryServiceTest {
         val result = categoryService.getCategories("mail@mail.com", CategoryType.EXPENSE)
         coVerify(exactly = 1) { categoryRepository.getCategories(any(), any()) }
 
-        assert(result.success == true)
+        assert(result.status == true)
         result.data?.let {
             assert(it.isNotEmpty())
             assert(it[0].name == catResponse.name)

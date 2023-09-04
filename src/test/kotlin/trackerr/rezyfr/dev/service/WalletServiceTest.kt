@@ -38,7 +38,7 @@ class WalletServiceTest {
         val result = walletService.addWallet(wallet)
 
         coVerify { wallletRepository.addWallet(wallet) }
-        assert(result.success == true)
+        assert(result.status == true)
         assert(result.data != null)
         assert(result.data!!.name == wallet.name)
         assert(result.data!!.balance == wallet.balance)
@@ -64,7 +64,7 @@ class WalletServiceTest {
 
         coVerify { wallletRepository.findWalletByUserEmail(email) }
 
-        assert(result.success == true)
+        assert(result.status == true)
         assert(result.data != null)
         assert(result.data!!.isNotEmpty())
         assert(result.data!![0].name == wallet.name)
@@ -97,7 +97,7 @@ class WalletServiceTest {
         coVerify { wallletRepository.findWalletById(1, email) }
         coVerify { wallletRepository.updateWalletBalance(1, 20000) }
 
-        assert(result.success == true)
+        assert(result.status == true)
         assert(result.data != null)
         assert(result.data!!.name == wallet.name)
         assert(result.data!!.balance == 20000L)

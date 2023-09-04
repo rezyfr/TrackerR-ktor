@@ -46,7 +46,7 @@ class TransactionServiceTest {
         coVerify(exactly = 1) { categoryRepository.getCategoryById(any(), any()) }
         coVerify(exactly = 1) { transactionRepository.addTransaction(any(), any(), any(), any()) }
 
-        assert(result.success == true)
+        assert(result.status == true)
         assert(result.data != null)
         assert(result.data!!.amount == transaction.amount.toFloat())
         assert(result.data!!.description == transaction.description)
@@ -94,7 +94,7 @@ class TransactionServiceTest {
 
         coVerify(exactly = 1) { transactionRepository.getRecentTransaction(email) }
 
-        assert(result.success == true)
+        assert(result.status == true)
         assert(result.data != null)
         assert(result.data!!.isNotEmpty())
         assert(result.data!![0].amount == 10000f)
