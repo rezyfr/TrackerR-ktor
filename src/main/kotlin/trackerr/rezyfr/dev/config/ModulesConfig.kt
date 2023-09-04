@@ -40,13 +40,13 @@ val walletModule = DI.Module("WALLET") {
 
 val categoryModule = DI.Module("CATEGORY") {
     bindSingleton<CategoryService> { CategoryServiceImpl(instance()) }
-    bindSingleton<CategoryRepository> { CategoryRepositoryImpl(instance()) }
+    bindSingleton<CategoryRepository> { CategoryRepositoryImpl(instance(), instance()) }
     bindSingleton<CategoryController> { CategoryControllerImpl(instance()) }
 }
 
 val transactionModule = DI.Module("TRANSACTION") {
     bindSingleton<TransactionService> { TransactionServiceImpl(instance(), instance(), instance()) }
-    bindSingleton<TransactionRepository> { TransactionRepositoryImpl(instance()) }
+    bindSingleton<TransactionRepository> { TransactionRepositoryImpl(instance(), instance()) }
     bindSingleton<TransactionController> { TransactionControllerImpl(instance()) }
 }
 

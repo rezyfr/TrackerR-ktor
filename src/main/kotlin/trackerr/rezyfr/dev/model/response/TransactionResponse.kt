@@ -8,7 +8,9 @@ data class TransactionResponse(
     val amount: Float,
     val description: String,
     val category: String,
+    val categoryIcon: String,
     val type: String,
     val wallet: String,
+    val walletIcon: String,
     val createdDate: String,
 )

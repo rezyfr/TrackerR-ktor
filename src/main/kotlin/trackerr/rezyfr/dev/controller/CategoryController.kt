@@ -28,7 +28,8 @@ class CategoryControllerImpl(
                         Category(
                             name = name,
                             userEmail = it.email,
-                            type = type
+                            type = type,
+                            iconId = iconId
                         )
                     ).let {
                         call.respond(HttpStatusCode.OK, it)

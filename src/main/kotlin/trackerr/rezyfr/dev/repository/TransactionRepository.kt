@@ -1,16 +1,20 @@
 package trackerr.rezyfr.dev.repository
 
 import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import trackerr.rezyfr.dev.db.table.CategoryTable
+import trackerr.rezyfr.dev.db.table.IconTable
 import trackerr.rezyfr.dev.db.table.TransactionTable
 import trackerr.rezyfr.dev.db.table.WalletTable
+import trackerr.rezyfr.dev.mapper.IconMapper
 import trackerr.rezyfr.dev.mapper.TransactionMapper
 import trackerr.rezyfr.dev.model.Category
 import trackerr.rezyfr.dev.model.CategoryType
 import trackerr.rezyfr.dev.model.Transaction
+import trackerr.rezyfr.dev.model.Wallet
 import trackerr.rezyfr.dev.model.response.CategoryResponse
 import trackerr.rezyfr.dev.model.response.TransactionResponse
 import trackerr.rezyfr.dev.model.response.WalletResponse
@@ -29,7 +33,8 @@ interface TransactionRepository {
 }
 
 class TransactionRepositoryImpl(
-    private val mapper: TransactionMapper
+    private val mapper: TransactionMapper,
+    private val iconMapper: IconMapper
 ) : TransactionRepository {
     override fun addTransaction(
         transaction: Transaction,
@@ -59,14 +64,28 @@ class TransactionRepositoryImpl(
                     Category(
                         name = catRow[CategoryTable.name],
                         type = CategoryType.valueOf(catRow[CategoryTable.type]),
-                        userEmail = catRow[CategoryTable.userEmail]
+                        userEmail = catRow[CategoryTable.userEmail],
+                        iconId = catRow[CategoryTable.iconId]
                     )
                 }
-                val walletName = WalletTable.select { WalletTable.id.eq(trxRow[TransactionTable.walletId]) }.first().let { walletRow ->
-                    walletRow[WalletTable.name]
+                val wallet = WalletTable.select { WalletTable.id.eq(trxRow[TransactionTable.walletId]) }.first().let { walletRow ->
+                    Wallet(
+                        name = walletRow[WalletTable.name],
+                        balance = walletRow[WalletTable.balance],
+                        userEmail = walletRow[WalletTable.userEmail],
+                        color = walletRow[WalletTable.color],
+                        iconId = walletRow[WalletTable.icon]
+                    )
                 }
-                mapper.rowToTransaction(trxRow, cat, walletName)
+                mapper.rowToTransaction(trxRow, cat, wallet, icon = { getIconUrl(it) })
             }
+        }
+    }
+
+
+    private fun getIconUrl(id: Int): String {
+        return IconTable.select { IconTable.id.eq(id) }.first().let { icon ->
+            iconMapper.rowToIcon(icon).url
         }
     }
 }

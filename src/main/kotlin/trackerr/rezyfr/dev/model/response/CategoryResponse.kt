@@ -7,5 +7,6 @@ import trackerr.rezyfr.dev.model.CategoryType
 data class CategoryResponse(
     val id: Int,
     val name: String,
-    val type: CategoryType
+    val type: CategoryType,
+    val icon: String
 )
