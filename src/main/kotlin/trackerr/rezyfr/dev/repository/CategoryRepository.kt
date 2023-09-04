@@ -50,6 +50,7 @@ class CategoryRepositoryImpl(
                 this[CategoryTable.name] = it.name
                 this[CategoryTable.type] = it.type.toString()
                 this[CategoryTable.userEmail] = it.userEmail
+                this[CategoryTable.iconId] = it.iconId
             }
         }
     }
