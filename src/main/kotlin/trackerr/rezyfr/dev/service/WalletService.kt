@@ -9,6 +9,7 @@ interface WalletService {
      fun addWallet(wallet: Wallet) : BaseResponse<WalletResponse>
      fun getWalletByUserEmail(email: String) : BaseResponse<List<WalletResponse>>
      fun updateWalletBalance(walletId: Int, balance: Long, email: String) : BaseResponse<WalletResponse>
+     fun getWalletBalance(email: String) : BaseResponse<Long>
 }
 
 class WalletServiceImpl(
@@ -25,5 +26,9 @@ class WalletServiceImpl(
     override fun updateWalletBalance(walletId: Int, balance: Long, email: String): BaseResponse<WalletResponse> {
         walletRepository.findWalletById(walletId, email) ?: throw IllegalArgumentException("Wallet not found")
         return BaseResponse(true, "Successfully updated wallet", walletRepository.updateWalletBalance(walletId, balance))
+    }
+
+    override fun getWalletBalance(email: String): BaseResponse<Long> {
+        return BaseResponse(true, "Successfully retrieved wallet balance", walletRepository.getWalletBalance(email))
     }
 }

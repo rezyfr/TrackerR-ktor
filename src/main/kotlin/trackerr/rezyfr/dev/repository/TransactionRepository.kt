@@ -1,7 +1,9 @@
 package trackerr.rezyfr.dev.repository
 
+import io.ktor.server.util.*
+import io.ktor.util.*
 import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -16,20 +18,23 @@ import trackerr.rezyfr.dev.model.CategoryType
 import trackerr.rezyfr.dev.model.Transaction
 import trackerr.rezyfr.dev.model.Wallet
 import trackerr.rezyfr.dev.model.response.CategoryResponse
+import trackerr.rezyfr.dev.model.response.SummaryResponse
 import trackerr.rezyfr.dev.model.response.TransactionResponse
 import trackerr.rezyfr.dev.model.response.WalletResponse
-import java.time.LocalDateTime
+import trackerr.rezyfr.dev.util.getEndOfMonth
+import trackerr.rezyfr.dev.util.getStartOfMonth
 import java.time.format.DateTimeFormatter
 
 interface TransactionRepository {
-     fun addTransaction(
+    fun addTransaction(
         transaction: Transaction,
         category: CategoryResponse,
         wallet: WalletResponse,
         email: String
     ): TransactionResponse
 
-     fun getRecentTransaction(email: String): List<TransactionResponse>
+    fun getRecentTransaction(email: String): List<TransactionResponse>
+    fun getMonthlySummary(month: Int, email: String): SummaryResponse
 }
 
 class TransactionRepositoryImpl(
@@ -43,7 +48,6 @@ class TransactionRepositoryImpl(
         email: String
     ): TransactionResponse {
         return transaction {
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             val rows = TransactionTable.insert {
                 it[amount] = transaction.amount
                 it[desc] = transaction.description
@@ -58,26 +62,53 @@ class TransactionRepositoryImpl(
 
     override fun getRecentTransaction(email: String): List<TransactionResponse> {
         return transaction {
-            TransactionTable.select { TransactionTable.userEmail.eq(email) }.orderBy(TransactionTable.id to SortOrder.DESC).limit(3).map { trxRow ->
-                val cat = CategoryTable.select { CategoryTable.id.eq(trxRow[TransactionTable.categoryId]) }.first().let { catRow ->
-                    Category(
-                        name = catRow[CategoryTable.name],
-                        type = CategoryType.valueOf(catRow[CategoryTable.type]),
-                        userEmail = catRow[CategoryTable.userEmail],
-                        iconId = catRow[CategoryTable.iconId]
-                    )
-                }
-                val wallet = WalletTable.select { WalletTable.id.eq(trxRow[TransactionTable.walletId]) }.first().let { walletRow ->
-                    Wallet(
-                        name = walletRow[WalletTable.name],
-                        balance = walletRow[WalletTable.balance],
-                        userEmail = walletRow[WalletTable.userEmail],
-                        color = walletRow[WalletTable.color],
-                        iconId = walletRow[WalletTable.icon]
-                    )
-                }
+            TransactionTable.select { TransactionTable.userEmail.eq(email) }
+                .orderBy(TransactionTable.id to SortOrder.DESC).limit(3).map { trxRow ->
+                val cat = CategoryTable.select { CategoryTable.id.eq(trxRow[TransactionTable.categoryId]) }.first()
+                    .let { catRow ->
+                        Category(
+                            name = catRow[CategoryTable.name],
+                            type = CategoryType.valueOf(catRow[CategoryTable.type]),
+                            userEmail = catRow[CategoryTable.userEmail],
+                            iconId = catRow[CategoryTable.iconId]
+                        )
+                    }
+                val wallet = WalletTable.select { WalletTable.id.eq(trxRow[TransactionTable.walletId]) }.first()
+                    .let { walletRow ->
+                        Wallet(
+                            name = walletRow[WalletTable.name],
+                            balance = walletRow[WalletTable.balance],
+                            userEmail = walletRow[WalletTable.userEmail],
+                            color = walletRow[WalletTable.color],
+                            iconId = walletRow[WalletTable.icon]
+                        )
+                    }
                 mapper.rowToTransaction(trxRow, cat, wallet, icon = { getIconUrl(it) })
             }
+        }
+    }
+
+    @OptIn(InternalAPI::class)
+    override fun getMonthlySummary(month: Int, email: String): SummaryResponse {
+        return transaction {
+            val startDate =
+                getStartOfMonth(month).toLocalDateTime()
+            val endDate = getEndOfMonth(month).toLocalDateTime()
+            val income = TransactionTable.select {
+                TransactionTable.userEmail.eq(email) and
+                TransactionTable.date.between(startDate, endDate) and
+                TransactionTable.type.eq(CategoryType.INCOME.toString())
+            }.map {
+                it[TransactionTable.amount].toLong()
+            }.sum()
+            val expense = TransactionTable.select {
+                TransactionTable.userEmail.eq(email) and
+                TransactionTable.date.between(startDate, endDate) and
+                TransactionTable.type.eq(CategoryType.EXPENSE.toString())
+            }.map {
+                it[TransactionTable.amount].toLong()
+            }.sum()
+            SummaryResponse(income, expense)
         }
     }
 

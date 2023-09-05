@@ -1,5 +1,6 @@
 package trackerr.rezyfr.dev.repository
 
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -16,6 +17,7 @@ interface WalletRepository {
     fun findWalletByUserEmail(userEmail: String): List<WalletResponse>?
     fun findWalletById(id: Int, userEmail: String): WalletResponse?
     fun updateWalletBalance(id: Int, balance: Long): WalletResponse
+    fun getWalletBalance(email: String): Long
 }
 
 class WalletRepositoryImpl(
@@ -49,8 +51,7 @@ class WalletRepositoryImpl(
     override fun findWalletById(id: Int, userEmail: String): WalletResponse? {
         return transaction {
             WalletTable.select {
-                WalletTable.id.eq(id)
-                WalletTable.userEmail.eq(userEmail)
+                WalletTable.id.eq(id) and WalletTable.userEmail.eq(userEmail)
             }.map {
                 mapper.rowToWallet(it, icon = { getIconUrl(it) })
             }
@@ -70,6 +71,14 @@ class WalletRepositoryImpl(
                     mapper.rowToWallet(it, icon = { getIconUrl(it) })
                 }
                 .first()
+        }
+    }
+
+    override fun getWalletBalance(email: String): Long {
+        return transaction {
+            WalletTable.select { WalletTable.userEmail.eq(email) }
+                .map { it[WalletTable.balance] }
+                .sum()
         }
     }
 

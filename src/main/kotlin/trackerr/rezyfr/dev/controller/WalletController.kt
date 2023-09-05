@@ -16,6 +16,7 @@ interface WalletController {
      suspend fun addWallet(call: ApplicationCall)
      suspend fun getWallets(call: ApplicationCall)
      suspend fun updateWalletBalance(call: ApplicationCall)
+     suspend fun getWalletBalance(call: ApplicationCall)
 }
 
 class WalletControllerImpl(
@@ -68,6 +69,18 @@ class WalletControllerImpl(
             }
         } catch (e: Exception) {
             call.respond(HttpStatusCode.BadRequest, ErrorResponse(e.message ?: "Something went wrong", false))
+        }
+    }
+
+    override suspend fun getWalletBalance(call: ApplicationCall) {
+        try {
+            call.principal<User>()!!.let {
+                walletService.getWalletBalance(it.email).let { balance ->
+                    call.respond(HttpStatusCode.OK, balance)
+                }
+            }
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Something went wrong", false))
         }
     }
 }

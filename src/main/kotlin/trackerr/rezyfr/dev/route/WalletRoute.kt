@@ -10,6 +10,7 @@ const val WALLET = "$API_VERSION/wallet"
 const val CREATE_WALLET_REQUEST = "$WALLET/create"
 const val GET_WALLET_REQUEST = WALLET
 const val UPDATE_WALLET_BALANCE_REQUEST = "$WALLET/update/balance"
+const val WALLET_BALANCE = "$API_VERSION/wallet/balance"
 
 @Location(CREATE_WALLET_REQUEST)
 class CreateWalletRoute
@@ -20,6 +21,9 @@ class GetWalletRoute
 @Location(UPDATE_WALLET_BALANCE_REQUEST)
 class UpdateWalletBalanceRoute
 
+@Location(WALLET_BALANCE)
+class GetWalletBalanceRoute
+
 fun Route.walletRoutes(
     walletController: WalletController,
 ) {
@@ -27,5 +31,6 @@ fun Route.walletRoutes(
         post<CreateWalletRoute> { walletController.addWallet(context) }
         get<GetWalletRoute> { walletController.getWallets(context) }
         post<UpdateWalletBalanceRoute> { walletController.updateWalletBalance(context) }
+        get<GetWalletBalanceRoute> { walletController.getWalletBalance(context) }
     }
 }

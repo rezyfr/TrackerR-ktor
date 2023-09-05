@@ -58,8 +58,7 @@ class CategoryRepositoryImpl(
     override fun getCategoryById(id: Int, userEmail: String): CategoryResponse? {
         return transaction {
             CategoryTable.select {
-                CategoryTable.id.eq(id)
-                CategoryTable.userEmail.eq(userEmail)
+                CategoryTable.id.eq(id) and CategoryTable.userEmail.eq(userEmail)
             }.map {
                 mapper.rowToCategory(it, icon = { getIconUrl(it) })
             }.firstOrNull()

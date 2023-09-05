@@ -2,6 +2,7 @@ package trackerr.rezyfr.dev.service
 
 import trackerr.rezyfr.dev.model.Transaction
 import trackerr.rezyfr.dev.model.response.BaseResponse
+import trackerr.rezyfr.dev.model.response.SummaryResponse
 import trackerr.rezyfr.dev.model.response.TransactionResponse
 import trackerr.rezyfr.dev.repository.CategoryRepository
 import trackerr.rezyfr.dev.repository.TransactionRepository
@@ -10,6 +11,7 @@ import trackerr.rezyfr.dev.repository.WalletRepository
 interface TransactionService {
      fun addTransaction(transaction: Transaction, email: String) : BaseResponse<TransactionResponse>
      fun getRecentTransactions(email: String) : BaseResponse<List<TransactionResponse>>
+     fun getMonthlySummary(month: Int, email: String) : BaseResponse<SummaryResponse>
 }
 
 class TransactionServiceImpl(
@@ -28,5 +30,9 @@ class TransactionServiceImpl(
 
     override fun getRecentTransactions(email: String) : BaseResponse<List<TransactionResponse>> {
         return BaseResponse(true, "Successfully retrieved recent transactions", transactionRepository.getRecentTransaction(email))
+    }
+
+    override fun getMonthlySummary(month: Int, email: String): BaseResponse<SummaryResponse> {
+        return BaseResponse(true, "Successfully retrieved monthly summary", transactionRepository.getMonthlySummary(month, email))
     }
 }

@@ -14,6 +14,7 @@ import trackerr.rezyfr.dev.service.TransactionService
 interface TransactionController {
      suspend fun addTransaction(call: ApplicationCall)
      suspend fun getRecentTransactions(call: ApplicationCall)
+     suspend fun getMonthlySummary(call: ApplicationCall)
 }
 
 class TransactionControllerImpl(
@@ -47,6 +48,22 @@ class TransactionControllerImpl(
             call.principal<User>()!!.let {
                 transactionService.getRecentTransactions(it.email).let {
                     call.respond(HttpStatusCode.OK, it)
+                }
+            }
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.BadRequest, ErrorResponse(e.message ?: "Something went wrong", false))
+        }
+    }
+
+    override suspend fun getMonthlySummary(call: ApplicationCall) {
+        try {
+            call.principal<User>()!!.let { user ->
+                call.parameters["month"]?.let {
+                    transactionService.getMonthlySummary(it.toInt(), user.email).let {
+                        call.respond(HttpStatusCode.OK, it)
+                    }
+                } ?: run {
+                    call.respond(HttpStatusCode.BadRequest, ErrorResponse("Month is required", false))
                 }
             }
         } catch (e: Exception) {
