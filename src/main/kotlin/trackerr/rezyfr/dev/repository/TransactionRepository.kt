@@ -50,7 +50,6 @@ class TransactionRepositoryImpl(
                 it[categoryId] = transaction.categoryId
                 it[type] = category.type.toString()
                 it[walletId] = transaction.walletId
-                it[date] = LocalDateTime.parse(transaction.createdDate, formatter)
                 it[userEmail] = email
             }.resultedValues
             mapper.rowsToTransaction(rows, category, wallet)!!
