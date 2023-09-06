@@ -10,14 +10,14 @@ data class Category(
 ) {
     companion object {
         fun getInitialCategories(userEmail: String) = listOf(
-            Category(name = "Food", type = CategoryType.EXPENSE, userEmail = userEmail, iconId = 1),
-            Category(name = "Salary", type = CategoryType.INCOME, userEmail = userEmail, iconId = 1),
-            Category(name = "Transportation", type = CategoryType.EXPENSE, userEmail = userEmail, iconId = 1),
-            Category(name = "Entertainment", type = CategoryType.EXPENSE, userEmail = userEmail, iconId = 1),
+            Category(name = "Food", type = CategoryType.EXPENSE, userEmail = userEmail, iconId = 4),
+            Category(name = "Salary", type = CategoryType.INCOME, userEmail = userEmail, iconId = 5),
+            Category(name = "Transportation", type = CategoryType.EXPENSE, userEmail = userEmail, iconId = 2),
+            Category(name = "Entertainment", type = CategoryType.EXPENSE, userEmail = userEmail, iconId = 14),
             Category(name = "Shopping", type = CategoryType.EXPENSE, userEmail = userEmail, iconId = 1),
-            Category(name = "Investment", type = CategoryType.INCOME, userEmail = userEmail, iconId = 1),
-            Category(name = "Gift", type = CategoryType.INCOME, userEmail = userEmail, iconId = 1),
-            Category(name = "Other", type = CategoryType.EXPENSE, userEmail = userEmail, iconId = 1),
+            Category(name = "Investment", type = CategoryType.INCOME, userEmail = userEmail, iconId = 13),
+            Category(name = "Gift", type = CategoryType.INCOME, userEmail = userEmail, iconId = 10),
+            Category(name = "Other", type = CategoryType.EXPENSE, userEmail = userEmail, iconId = 15),
         )
     }
 }
