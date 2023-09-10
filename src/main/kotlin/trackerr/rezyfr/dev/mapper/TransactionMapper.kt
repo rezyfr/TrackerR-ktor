@@ -19,19 +19,18 @@ class TransactionMapper {
                 id = it[TransactionTable.id],
                 amount = it[TransactionTable.amount].toFloat(),
                 description = it[TransactionTable.desc],
-                category = category.name,
+                categoryName = category.name,
                 type = category.type.name,
                 wallet = wallet.name,
                 createdDate = it[TransactionTable.date].toString(),
                 walletIcon = wallet.icon,
-                categoryIcon = category.icon
             )
         }?.firstOrNull()
     }
 
     fun rowToTransaction(
         row: ResultRow,
-        category: Category,
+        category: CategoryResponse,
         wallet: Wallet,
         icon: (Int) -> String
     ): TransactionResponse {
@@ -39,11 +38,11 @@ class TransactionMapper {
             id = row[TransactionTable.id],
             amount = row[TransactionTable.amount].toFloat(),
             description = row[TransactionTable.desc],
-            category = category.name,
+            category = category,
+            categoryName = category.name,
             type = category.type.name,
             wallet = wallet.name,
             createdDate = row[TransactionTable.date].toString(),
-            categoryIcon = icon(category.iconId),
             walletIcon = icon(wallet.iconId)
         )
     }

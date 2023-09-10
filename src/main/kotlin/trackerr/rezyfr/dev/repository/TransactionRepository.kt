@@ -77,11 +77,11 @@ class TransactionRepositoryImpl(
                 .orderBy(TransactionTable.id to SortOrder.DESC).limit(3).map { trxRow ->
                 val cat = CategoryTable.select { CategoryTable.id.eq(trxRow[TransactionTable.categoryId]) }.first()
                     .let { catRow ->
-                        Category(
+                        CategoryResponse(
+                            id = catRow[CategoryTable.id],
                             name = catRow[CategoryTable.name],
                             type = CategoryType.valueOf(catRow[CategoryTable.type]),
-                            userEmail = catRow[CategoryTable.userEmail],
-                            iconId = catRow[CategoryTable.iconId],
+                            icon = getIconUrl(catRow[CategoryTable.iconId]),
                             color = catRow[CategoryTable.color]
                         )
                     }
