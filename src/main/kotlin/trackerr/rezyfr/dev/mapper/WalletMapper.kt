@@ -11,7 +11,6 @@ class WalletMapper {
                 id = it[WalletTable.id],
                 name = it[WalletTable.name],
                 balance = it[WalletTable.balance],
-                color = it[WalletTable.color],
                 icon = icon.invoke(it[WalletTable.icon])
             )
         }
@@ -22,7 +21,6 @@ class WalletMapper {
             id = row[WalletTable.id],
             name = row[WalletTable.name],
             balance = row[WalletTable.balance],
-            color = row[WalletTable.color],
             icon = icon.invoke(row[WalletTable.icon])
         )
     }

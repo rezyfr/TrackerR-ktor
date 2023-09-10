@@ -91,7 +91,6 @@ class TransactionRepositoryImpl(
                             name = walletRow[WalletTable.name],
                             balance = walletRow[WalletTable.balance],
                             userEmail = walletRow[WalletTable.userEmail],
-                            color = walletRow[WalletTable.color],
                             iconId = walletRow[WalletTable.icon]
                         )
                     }

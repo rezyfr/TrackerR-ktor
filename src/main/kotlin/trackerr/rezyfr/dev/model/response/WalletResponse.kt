@@ -7,6 +7,5 @@ data class WalletResponse(
     val id: Int,
     val name: String,
     val balance: Long,
-    val color: Long,
     val icon: String,
 )

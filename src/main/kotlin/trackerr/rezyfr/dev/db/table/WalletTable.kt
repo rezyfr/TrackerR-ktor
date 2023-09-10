@@ -8,7 +8,6 @@ object WalletTable : Table() {
     val name = varchar("name", 128)
     val balance = long("balance")
     val userEmail = varchar("user_email", 128).references(UserTable.email)
-    val color = long("color")
     val icon = integer("icon").references(IconTable.id)
 
     override val primaryKey = PrimaryKey(id)

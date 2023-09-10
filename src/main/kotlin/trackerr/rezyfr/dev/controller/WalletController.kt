@@ -31,7 +31,6 @@ class WalletControllerImpl(
                             name = name,
                             balance = balance,
                             userEmail = it.email,
-                            color = color,
                             iconId = iconId
                         )
                     ).let {

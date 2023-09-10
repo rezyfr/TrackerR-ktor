@@ -30,7 +30,6 @@ class WalletRepositoryImpl(
                 it[name] = wallet.name
                 it[balance] = wallet.balance
                 it[userEmail] = wallet.userEmail
-                it[color] = wallet.color
                 it[icon] = wallet.iconId
             }.resultedValues
 
