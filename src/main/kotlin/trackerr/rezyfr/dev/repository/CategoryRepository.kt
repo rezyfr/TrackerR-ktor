@@ -29,6 +29,7 @@ class CategoryRepositoryImpl(
                 it[type] = category.type.toString()
                 it[userEmail] = category.userEmail
                 it[iconId] = category.iconId
+                it[color] = category.color.toString()
             }.resultedValues
             mapper.rowsToCategory(rows, icon = { getIconUrl(it) })!!
         }
@@ -51,6 +52,7 @@ class CategoryRepositoryImpl(
                 this[CategoryTable.type] = it.type.toString()
                 this[CategoryTable.userEmail] = it.userEmail
                 this[CategoryTable.iconId] = it.iconId
+                this[CategoryTable.color] = it.color.toString()
             }
         }
     }

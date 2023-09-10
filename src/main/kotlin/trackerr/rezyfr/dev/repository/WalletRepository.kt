@@ -60,10 +60,10 @@ class WalletRepositoryImpl(
 
     override fun updateWalletBalance(id: Int, balance: Long): WalletResponse {
         return transaction {
-            WalletTable.update {
-                it[WalletTable.balance] = balance
-                it[WalletTable.id] = id
-            }
+            WalletTable.update(
+                where = { WalletTable.id.eq(id) },
+                body = { it[WalletTable.balance] = balance }
+            )
 
             WalletTable
                 .select { WalletTable.id.eq(id) }

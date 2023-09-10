@@ -8,6 +8,7 @@ import trackerr.rezyfr.dev.db.table.TransactionTable
 import trackerr.rezyfr.dev.db.table.UserTable
 import trackerr.rezyfr.dev.db.table.WalletTable
 import trackerr.rezyfr.dev.mapper.CategoryMapper
+import trackerr.rezyfr.dev.mapper.IconMapper
 import trackerr.rezyfr.dev.mapper.TransactionMapper
 import trackerr.rezyfr.dev.mapper.WalletMapper
 import trackerr.rezyfr.dev.model.Category
@@ -15,6 +16,7 @@ import trackerr.rezyfr.dev.model.CategoryType
 import trackerr.rezyfr.dev.model.Transaction
 import trackerr.rezyfr.dev.model.Wallet
 import trackerr.rezyfr.dev.model.response.CategoryResponse
+import trackerr.rezyfr.dev.model.response.Icon
 import java.math.BigDecimal
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -28,10 +30,10 @@ class TransactionRepositoryTest : BaseRepositoryTest() {
     @BeforeEach
     override fun setUp() {
         super.setUp()
-        transactionRepository = TransactionRepositoryImpl(TransactionMapper())
+        transactionRepository = TransactionRepositoryImpl(TransactionMapper(), IconMapper())
         userRepository = UserRepositoryImpl()
-        walletRepository = WalletRepositoryImpl(WalletMapper())
-        categoryRepository = CategoryRepositoryImpl(CategoryMapper())
+        walletRepository = WalletRepositoryImpl(WalletMapper(), IconMapper())
+        categoryRepository = CategoryRepositoryImpl(CategoryMapper(), IconMapper())
     }
 
     @Test
@@ -39,13 +41,13 @@ class TransactionRepositoryTest : BaseRepositoryTest() {
         withTables(UserTable, WalletTable, CategoryTable, TransactionTable) {
             // given
             userRepository.addUser(user)
-            val wallet = Wallet("test", 1000L, user.email, 0xFFFFFF, "icon")
+            val wallet = Wallet("test", 1000L, user.email, 0xFFFFFF, 1)
 
             // when
             val walletResponse = walletRepository.addWallet(wallet)
-            val category = categoryRepository.addCategory(Category("test", user.email, CategoryType.INCOME))
+            val category = categoryRepository.addCategory(Category("test", user.email, CategoryType.INCOME, 1))
             val transaction = transactionRepository.addTransaction(
-                Transaction(BigDecimal(100), "test", category.id, walletResponse.id, "2021-01-01 00:00:00"),
+                Transaction(100.0, "test", category.id, walletResponse.id, "2021-01-01 00:00:00"),
                 category,
                 walletResponse,
                 user.email,
@@ -68,12 +70,12 @@ class TransactionRepositoryTest : BaseRepositoryTest() {
 
             assert(transactionRepository.getRecentTransaction(user.email).isEmpty())
 
-            val wallet = Wallet("test", 1000L, user.email, 0xFFFFFF, "icon")
+            val wallet = Wallet("test", 1000L, user.email, 0xFFFFFF, 1)
             val walletResponse = walletRepository.addWallet(wallet)
-            val category = categoryRepository.addCategory(Category("test", user.email, CategoryType.INCOME))
+            val category = categoryRepository.addCategory(Category("test", user.email, CategoryType.INCOME, 1))
             repeat(5) {
                 transactionRepository.addTransaction(
-                    Transaction(BigDecimal(100), "test", category.id, walletResponse.id, "2021-01-01 00:00:0$it"),
+                    Transaction(100.0, "test", category.id, walletResponse.id, "2021-01-01 00:00:0$it"),
                     category,
                     walletResponse,
                     user.email,

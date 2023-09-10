@@ -12,7 +12,8 @@ class CategoryMapper {
                 id = it[CategoryTable.id],
                 name = it[CategoryTable.name],
                 type = CategoryType.valueOf(it[CategoryTable.type]),
-                icon = icon(it[CategoryTable.iconId])
+                icon = icon(it[CategoryTable.iconId]),
+                color = it[CategoryTable.color]
             )
         }?.firstOrNull()
     }
@@ -23,7 +24,8 @@ class CategoryMapper {
                 id = it[CategoryTable.id],
                 name = it[CategoryTable.name],
                 type = CategoryType.valueOf(it[CategoryTable.type]),
-                icon = icon(it[CategoryTable.iconId])
+                icon = icon(it[CategoryTable.iconId]),
+                color = it[CategoryTable.color]
             )
         }
     }

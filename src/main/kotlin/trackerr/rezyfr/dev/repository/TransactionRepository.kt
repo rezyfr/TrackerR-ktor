@@ -2,10 +2,7 @@ package trackerr.rezyfr.dev.repository
 
 import io.ktor.server.util.*
 import io.ktor.util.*
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import trackerr.rezyfr.dev.db.table.CategoryTable
 import trackerr.rezyfr.dev.db.table.IconTable
@@ -23,7 +20,7 @@ import trackerr.rezyfr.dev.model.response.TransactionResponse
 import trackerr.rezyfr.dev.model.response.WalletResponse
 import trackerr.rezyfr.dev.util.getEndOfMonth
 import trackerr.rezyfr.dev.util.getStartOfMonth
-import java.time.format.DateTimeFormatter
+import java.math.BigDecimal
 
 interface TransactionRepository {
     fun addTransaction(
@@ -49,13 +46,27 @@ class TransactionRepositoryImpl(
     ): TransactionResponse {
         return transaction {
             val rows = TransactionTable.insert {
-                it[amount] = transaction.amount
+                it[amount] = BigDecimal(transaction.amount)
                 it[desc] = transaction.description
                 it[categoryId] = transaction.categoryId
                 it[type] = category.type.toString()
                 it[walletId] = transaction.walletId
                 it[userEmail] = email
             }.resultedValues
+
+            if (rows != null) {
+                WalletTable.update(
+                    where = { WalletTable.id.eq(wallet.id) },
+                    body = {
+                        val amount = if (category.type == CategoryType.EXPENSE) {
+                            transaction.amount * -1
+                        } else {
+                            transaction.amount
+                        }
+                        it[balance] = wallet.balance + amount.toLong()
+                    }
+                )
+            }
             mapper.rowsToTransaction(rows, category, wallet)!!
         }
     }
@@ -70,7 +81,8 @@ class TransactionRepositoryImpl(
                             name = catRow[CategoryTable.name],
                             type = CategoryType.valueOf(catRow[CategoryTable.type]),
                             userEmail = catRow[CategoryTable.userEmail],
-                            iconId = catRow[CategoryTable.iconId]
+                            iconId = catRow[CategoryTable.iconId],
+                            color = catRow[CategoryTable.color]
                         )
                     }
                 val wallet = WalletTable.select { WalletTable.id.eq(trxRow[TransactionTable.walletId]) }.first()

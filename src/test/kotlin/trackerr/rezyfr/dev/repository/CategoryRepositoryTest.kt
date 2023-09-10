@@ -6,6 +6,7 @@ import org.junit.jupiter.api.TestInstance
 import trackerr.rezyfr.dev.db.table.CategoryTable
 import trackerr.rezyfr.dev.db.table.UserTable
 import trackerr.rezyfr.dev.mapper.CategoryMapper
+import trackerr.rezyfr.dev.mapper.IconMapper
 import trackerr.rezyfr.dev.model.Category
 import trackerr.rezyfr.dev.model.CategoryType
 
@@ -18,7 +19,7 @@ class CategoryRepositoryTest : BaseRepositoryTest() {
     @BeforeEach
     override fun setUp() {
         super.setUp()
-        categoryRepository = CategoryRepositoryImpl(CategoryMapper())
+        categoryRepository = CategoryRepositoryImpl(CategoryMapper(), IconMapper())
         userRepository = UserRepositoryImpl()
     }
 
@@ -26,7 +27,7 @@ class CategoryRepositoryTest : BaseRepositoryTest() {
     fun `test add category`() {
         withTables(CategoryTable, UserTable) {
             userRepository.addUser(user)
-            val category = Category("test", user.email, CategoryType.EXPENSE)
+            val category = Category("test", user.email, CategoryType.EXPENSE, 1)
 
             val nullResult = categoryRepository.getCategoryById(0, user.email)
             assert(nullResult == null)
@@ -47,7 +48,7 @@ class CategoryRepositoryTest : BaseRepositoryTest() {
             val emptyResult = categoryRepository.getCategories(user.email, CategoryType.EXPENSE)
             assert(emptyResult.isEmpty())
 
-            val category = Category("test", user.email, CategoryType.EXPENSE)
+            val category = Category("test", user.email, CategoryType.EXPENSE, 1)
 
             categoryRepository.addCategory(category).let {
                 val result = categoryRepository.getCategories(user.email, category.type)

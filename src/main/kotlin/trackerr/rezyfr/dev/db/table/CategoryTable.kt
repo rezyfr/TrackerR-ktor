@@ -9,6 +9,7 @@ object CategoryTable : Table() {
     val type = varchar("type", 7)
     val userEmail = varchar("user_email", 128).references(UserTable.email)
     val iconId = integer("icon_id").references(IconTable.id)
+    val color = varchar("color",12)
 
     override val primaryKey = PrimaryKey(id)
 }

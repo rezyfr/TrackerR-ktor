@@ -10,6 +10,7 @@ import trackerr.rezyfr.dev.model.User
 import trackerr.rezyfr.dev.model.request.CreateTransactionRequest
 import trackerr.rezyfr.dev.model.response.ErrorResponse
 import trackerr.rezyfr.dev.service.TransactionService
+import java.math.BigDecimal
 
 interface TransactionController {
      suspend fun addTransaction(call: ApplicationCall)
@@ -26,7 +27,7 @@ class TransactionControllerImpl(
                 call.principal<User>()!!.let {
                     transactionService.addTransaction(
                         Transaction(
-                            amount = amount.toBigDecimal(),
+                            amount = amount,
                             description = description,
                             categoryId = categoryId,
                             walletId = walletId,

@@ -34,10 +34,10 @@ class TransactionServiceTest {
     @Test
     fun `test add transaction`() {
         coEvery { walletRepository.findWalletById(any(), any()) } returns WalletResponse(1, "test", 10000, 0xffffff, "icon")
-        coEvery { categoryRepository.getCategoryById(any(), any()) } returns CategoryResponse(1, "test", CategoryType.EXPENSE)
-        coEvery { transactionRepository.addTransaction(any(), any(), any(), any()) } returns TransactionResponse(1, 10000f, "desc", "cat", CategoryType.EXPENSE.name, "wallet", "2021-01-01T00:00:00.000Z")
+        coEvery { categoryRepository.getCategoryById(any(), any()) } returns CategoryResponse(1, "test", CategoryType.EXPENSE, "icon")
+        coEvery { transactionRepository.addTransaction(any(), any(), any(), any()) } returns TransactionResponse(1, 10000f, "desc", "cat", CategoryType.EXPENSE.name, "wallet", "", "", "2021-01-01T00:00:00.000Z")
 
-        val transaction = Transaction(BigDecimal(10000), "desc", 1, 1, "2021-01-01T00:00:00.000Z")
+        val transaction = Transaction(10000.0, "desc", 1, 1, "2021-01-01T00:00:00.000Z")
         val email = "mail@mail.com"
 
         val result = transactionService.addTransaction(transaction, email)
@@ -56,7 +56,7 @@ class TransactionServiceTest {
     fun `test add transaction with no wallet found`() {
         coEvery { walletRepository.findWalletById(any(), any()) } returns null
 
-        val transaction = Transaction(BigDecimal(10000), "desc", 1, 1, "2021-01-01T00:00:00.000Z")
+        val transaction = Transaction(10000.0, "desc", 1, 1, "2021-01-01T00:00:00.000Z")
 
         assertThrows<Exception> {
             transactionService.addTransaction(transaction, "mail@mail.com")
@@ -68,7 +68,7 @@ class TransactionServiceTest {
         coEvery { walletRepository.findWalletById(any(), any()) } returns null
         coEvery { categoryRepository.getCategoryById(any(), any()) } returns null
 
-        val transaction = Transaction(BigDecimal(10000), "desc", 1, 1, "2021-01-01T00:00:00.000Z")
+        val transaction = Transaction(10000.0, "desc", 1, 1, "2021-01-01T00:00:00.000Z")
 
         assertThrows<Exception> {
             transactionService.addTransaction(transaction, "mail@mail.com")
@@ -86,6 +86,7 @@ class TransactionServiceTest {
                 "cat",
                 CategoryType.EXPENSE.name,
                 "wallet",
+                "","",
                 "2021-01-01T00:00:00.000Z"
             )
         )

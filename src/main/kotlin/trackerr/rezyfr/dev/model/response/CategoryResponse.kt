@@ -8,5 +8,6 @@ data class CategoryResponse(
     val id: Int,
     val name: String,
     val type: CategoryType,
-    val icon: String
+    val icon: String,
+    val color: String
 )

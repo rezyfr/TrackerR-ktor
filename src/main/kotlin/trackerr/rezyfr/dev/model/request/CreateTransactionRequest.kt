@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CreateTransactionRequest(
-    val amount: Float,
+    val amount: Double,
     val description: String,
     val categoryId: Int,
     val walletId: Int,

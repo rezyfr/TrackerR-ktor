@@ -7,5 +7,6 @@ import trackerr.rezyfr.dev.model.CategoryType
 data class CreateCategoryRequest(
     val name: String,
     val type: CategoryType,
-    val iconId: Int
+    val iconId: Int,
+    val color: String
 )
