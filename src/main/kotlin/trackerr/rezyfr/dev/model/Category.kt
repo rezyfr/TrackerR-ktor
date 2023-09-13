@@ -26,43 +26,43 @@ data class Category(
                 iconId = 2,
                 color = "#7f3dff"
             ),
-            Category(
-                name = "Entertainment",
-                type = CategoryType.EXPENSE,
-                userEmail = userEmail,
-                iconId = 14,
-                color = "#7f3dff"
-            ),
-            Category(
-                name = "Shopping",
-                type = CategoryType.EXPENSE,
-                userEmail = userEmail,
-                iconId = 1,
-                color = "#7f3dff"
-            ),
-            Category(
-                name = "Investment",
-                type = CategoryType.INCOME,
-                userEmail = userEmail,
-                iconId = 13,
-                color = "#7f3dff"
-            ),
-            Category(name = "Gift", type = CategoryType.INCOME, userEmail = userEmail, iconId = 10, color = "#7f3dff"),
-            Category(
-                name = "Other",
-                type = CategoryType.EXPENSE,
-                userEmail = userEmail,
-                iconId = 15,
-                color = "#7f3dff"
-            ),
+//            Category(
+//                name = "Entertainment",
+//                type = CategoryType.EXPENSE,
+//                userEmail = userEmail,
+//                iconId = 14,
+//                color = "#7f3dff"
+//            ),
+//            Category(
+//                name = "Shopping",
+//                type = CategoryType.EXPENSE,
+//                userEmail = userEmail,
+//                iconId = 1,
+//                color = "#7f3dff"
+//            ),
+//            Category(
+//                name = "Investment",
+//                type = CategoryType.INCOME,
+//                userEmail = userEmail,
+//                iconId = 13,
+//                color = "#7f3dff"
+//            ),
+//            Category(name = "Gift", type = CategoryType.INCOME, userEmail = userEmail, iconId = 10, color = "#7f3dff"),
+//            Category(
+//                name = "Other",
+//                type = CategoryType.EXPENSE,
+//                userEmail = userEmail,
+//                iconId = 15,
+//                color = "#7f3dff"
+//            ),
         )
     }
 }
 
 enum class CategoryType {
-    @SerialName("income")
+    @SerialName("INCOME")
     INCOME,
 
-    @SerialName("expense")
+    @SerialName("EXPENSE")
     EXPENSE;
 }

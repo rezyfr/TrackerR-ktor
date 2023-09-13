@@ -49,10 +49,10 @@ class CategoryRepositoryImpl(
         transaction {
             CategoryTable.batchInsert(data = Category.getInitialCategories(userEmail), shouldReturnGeneratedValues = false) {
                 this[CategoryTable.name] = it.name
-                this[CategoryTable.type] = it.type.toString()
+                this[CategoryTable.type] = it.type.name
                 this[CategoryTable.userEmail] = it.userEmail
                 this[CategoryTable.iconId] = it.iconId
-                this[CategoryTable.color] = it.color.toString()
+                this[CategoryTable.color] = it.color
             }
         }
     }

@@ -7,6 +7,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import trackerr.rezyfr.dev.model.User
 import trackerr.rezyfr.dev.model.request.LoginRequest
+import trackerr.rezyfr.dev.model.request.RefreshTokenRequest
 import trackerr.rezyfr.dev.model.request.RegisterRequest
 import trackerr.rezyfr.dev.model.response.BaseResponse
 import trackerr.rezyfr.dev.model.response.ErrorResponse
@@ -18,6 +19,7 @@ interface UserController {
      suspend fun login(call: ApplicationCall)
      fun findUserByEmail(email: String): User?
      suspend fun checkToken(call: ApplicationCall)
+     suspend fun refreshToken(call: ApplicationCall)
 }
 
 class UserControllerImpl(
@@ -59,6 +61,18 @@ class UserControllerImpl(
             }
         } catch (e: Exception) {
             call.respond(HttpStatusCode.Unauthorized, ErrorResponse(e.message ?: "Something went wrong", false))
+        }
+    }
+
+    override suspend fun refreshToken(call: ApplicationCall) {
+        try {
+            call.receive<RefreshTokenRequest>().apply {
+                userService.refreshToken(email, refreshToken).let {
+                    call.respond(HttpStatusCode.OK, it)
+                }
+            }
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.BadRequest, ErrorResponse(e.message ?: "Something went wrong", false))
         }
     }
 }

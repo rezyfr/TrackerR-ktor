@@ -33,14 +33,14 @@ class UserServiceTest {
         coEvery { userRepository.findUserByEmail(user.email) } returns null
         coEvery { userRepository.addUser(user) } returns Unit
         coEvery { categoryRepository.populateStarterCategories(user.email) } returns Unit
-        coEvery { jwtService.generateToken(user) } returns "token"
+        coEvery { jwtService.generateAccessToken(user) } returns "token"
 
         userService.createUser(user)
 
         coVerify(atLeast = 1) {
             userRepository.addUser(user)
             categoryRepository.populateStarterCategories(user.email)
-            jwtService.generateToken(user)
+            jwtService.generateAccessToken(user)
         }
     }
 
@@ -90,14 +90,14 @@ class UserServiceTest {
     fun `test success authenticate`() {
         coEvery { userRepository.findUserByEmail(user.email) } returns user
         coEvery { passwordManager.hash(user.hashPassword) } returns user.hashPassword
-        coEvery { jwtService.generateToken(user) } returns "token"
+        coEvery { jwtService.generateAccessToken(user) } returns "token"
 
         userService.authenticate(user.email, user.hashPassword)
 
         coVerify(exactly = 1) {
             userRepository.findUserByEmail(user.email)
             passwordManager.hash(user.hashPassword)
-            jwtService.generateToken(user)
+            jwtService.generateAccessToken(user)
         }
     }
 
@@ -127,7 +127,7 @@ class UserServiceTest {
         coVerify(exactly = 1) { userRepository.findUserByEmail(user.email) }
         coVerify(exactly = 0) {
             passwordManager.hash(user.hashPassword)
-            jwtService.generateToken(user)
+            jwtService.generateAccessToken(user)
         }
     }
 
