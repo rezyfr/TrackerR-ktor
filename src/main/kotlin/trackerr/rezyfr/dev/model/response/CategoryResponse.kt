@@ -9,5 +9,5 @@ data class CategoryResponse(
     val name: String,
     val type: CategoryType,
     val icon: String,
-    val color: String
+    val color: Long
 )

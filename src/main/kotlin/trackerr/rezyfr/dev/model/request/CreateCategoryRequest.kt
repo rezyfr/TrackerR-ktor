@@ -8,5 +8,5 @@ data class CreateCategoryRequest(
     val name: String,
     val type: CategoryType,
     val iconId: Int,
-    val color: String
+    val color: Long
 )

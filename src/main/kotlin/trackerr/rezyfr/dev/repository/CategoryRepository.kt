@@ -29,7 +29,7 @@ class CategoryRepositoryImpl(
                 it[type] = category.type.toString()
                 it[userEmail] = category.userEmail
                 it[iconId] = category.iconId
-                it[color] = category.color.toString()
+                it[color] = category.color
             }.resultedValues
             mapper.rowsToCategory(rows, icon = { getIconUrl(it) })!!
         }

@@ -7,24 +7,24 @@ data class Category(
     val userEmail: String,
     val type: CategoryType,
     val iconId: Int,
-    val color: String
+    val color: Long
 ) {
     companion object {
         fun getInitialCategories(userEmail: String) = listOf(
-            Category(name = "Food", type = CategoryType.EXPENSE, userEmail = userEmail, iconId = 4, color = "#7f3dff"),
+            Category(name = "Food", type = CategoryType.EXPENSE, userEmail = userEmail, iconId = 4, color = 0xff7f3dff),
             Category(
                 name = "Salary",
                 type = CategoryType.INCOME,
                 userEmail = userEmail,
                 iconId = 5,
-                color = "#7f3dff"
+                color = 0xff7f3dff
             ),
             Category(
                 name = "Transportation",
                 type = CategoryType.EXPENSE,
                 userEmail = userEmail,
                 iconId = 2,
-                color = "#7f3dff"
+                color = 0xff7f3dff
             ),
 //            Category(
 //                name = "Entertainment",
