@@ -18,6 +18,7 @@ import trackerr.rezyfr.dev.model.response.CategoryResponse
 import trackerr.rezyfr.dev.model.response.SummaryResponse
 import trackerr.rezyfr.dev.model.response.TransactionResponse
 import trackerr.rezyfr.dev.model.response.WalletResponse
+import trackerr.rezyfr.dev.util.formatToLocalDateTime
 import trackerr.rezyfr.dev.util.getEndOfMonth
 import trackerr.rezyfr.dev.util.getStartOfMonth
 import java.math.BigDecimal
@@ -52,6 +53,7 @@ class TransactionRepositoryImpl(
                 it[type] = category.type.toString()
                 it[walletId] = transaction.walletId
                 it[userEmail] = email
+                it[date] = transaction.createdDate.formatToLocalDateTime()
             }.resultedValues
 
             if (rows != null) {
@@ -74,7 +76,7 @@ class TransactionRepositoryImpl(
     override fun getRecentTransaction(email: String): List<TransactionResponse> {
         return transaction {
             TransactionTable.select { TransactionTable.userEmail.eq(email) }
-                .orderBy(TransactionTable.id to SortOrder.DESC).limit(3).map { trxRow ->
+                .orderBy(TransactionTable.date to SortOrder.ASC).limit(3).map { trxRow ->
                 val cat = CategoryTable.select { CategoryTable.id.eq(trxRow[TransactionTable.categoryId]) }.first()
                     .let { catRow ->
                         CategoryResponse(
