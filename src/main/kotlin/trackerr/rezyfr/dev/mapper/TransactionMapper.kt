@@ -2,10 +2,9 @@ package trackerr.rezyfr.dev.mapper
 
 import org.jetbrains.exposed.sql.ResultRow
 import trackerr.rezyfr.dev.db.table.TransactionTable
-import trackerr.rezyfr.dev.model.Category
 import trackerr.rezyfr.dev.model.Wallet
 import trackerr.rezyfr.dev.model.response.CategoryResponse
-import trackerr.rezyfr.dev.model.response.TransactionResponse
+import trackerr.rezyfr.dev.model.response.transaction.TransactionResponse
 import trackerr.rezyfr.dev.model.response.WalletResponse
 
 class TransactionMapper {

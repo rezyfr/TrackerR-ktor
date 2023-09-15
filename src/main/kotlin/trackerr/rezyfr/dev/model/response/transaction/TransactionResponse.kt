@@ -1,6 +1,7 @@
-package trackerr.rezyfr.dev.model.response
+package trackerr.rezyfr.dev.model.response.transaction
 
 import kotlinx.serialization.Serializable
+import trackerr.rezyfr.dev.model.response.CategoryResponse
 
 @Serializable
 data class TransactionResponse(

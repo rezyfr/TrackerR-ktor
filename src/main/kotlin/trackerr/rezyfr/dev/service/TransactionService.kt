@@ -1,9 +1,11 @@
 package trackerr.rezyfr.dev.service
 
+import trackerr.rezyfr.dev.model.Granularity
 import trackerr.rezyfr.dev.model.Transaction
 import trackerr.rezyfr.dev.model.response.BaseResponse
-import trackerr.rezyfr.dev.model.response.SummaryResponse
-import trackerr.rezyfr.dev.model.response.TransactionResponse
+import trackerr.rezyfr.dev.model.response.transaction.SummaryResponse
+import trackerr.rezyfr.dev.model.response.transaction.TransactionFrequencyResponse
+import trackerr.rezyfr.dev.model.response.transaction.TransactionResponse
 import trackerr.rezyfr.dev.repository.CategoryRepository
 import trackerr.rezyfr.dev.repository.TransactionRepository
 import trackerr.rezyfr.dev.repository.WalletRepository
@@ -12,6 +14,7 @@ interface TransactionService {
      fun addTransaction(transaction: Transaction, email: String) : BaseResponse<TransactionResponse>
      fun getRecentTransactions(email: String) : BaseResponse<List<TransactionResponse>>
      fun getMonthlySummary(month: Int, email: String) : BaseResponse<SummaryResponse>
+    fun getTransactionFrequency(granularity: Granularity): BaseResponse<List<TransactionFrequencyResponse>>
 }
 
 class TransactionServiceImpl(
@@ -34,5 +37,9 @@ class TransactionServiceImpl(
 
     override fun getMonthlySummary(month: Int, email: String): BaseResponse<SummaryResponse> {
         return BaseResponse(true, "Successfully retrieved monthly summary", transactionRepository.getMonthlySummary(month, email))
+    }
+
+    override fun getTransactionFrequency(granularity: Granularity): BaseResponse<List<TransactionFrequencyResponse>> {
+        return BaseResponse(true, "Successfully retrieved transaction frequency", transactionRepository.getTransactionFrequency(granularity))
     }
 }

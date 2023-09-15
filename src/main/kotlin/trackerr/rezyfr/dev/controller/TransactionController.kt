@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import trackerr.rezyfr.dev.model.Granularity
 import trackerr.rezyfr.dev.model.Transaction
 import trackerr.rezyfr.dev.model.User
 import trackerr.rezyfr.dev.model.request.CreateTransactionRequest
@@ -16,6 +17,7 @@ interface TransactionController {
      suspend fun addTransaction(call: ApplicationCall)
      suspend fun getRecentTransactions(call: ApplicationCall)
      suspend fun getMonthlySummary(call: ApplicationCall)
+     suspend fun getTransactionFrequency(call: ApplicationCall)
 }
 
 class TransactionControllerImpl(
@@ -65,6 +67,22 @@ class TransactionControllerImpl(
                     }
                 } ?: run {
                     call.respond(HttpStatusCode.BadRequest, ErrorResponse("Month is required", false))
+                }
+            }
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.BadRequest, ErrorResponse(e.message ?: "Something went wrong", false))
+        }
+    }
+
+    override suspend fun getTransactionFrequency(call: ApplicationCall) {
+        try {
+            call.principal<User>()!!.let { user ->
+                call.parameters["granularity"]?.let {
+                    transactionService.getTransactionFrequency(Granularity.valueOf(it)).let {
+                        call.respond(HttpStatusCode.OK, it)
+                    }
+                } ?: run {
+                    call.respond(HttpStatusCode.BadRequest, ErrorResponse("Granularity is required", false))
                 }
             }
         } catch (e: Exception) {

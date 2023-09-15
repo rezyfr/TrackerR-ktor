@@ -3,6 +3,8 @@ package trackerr.rezyfr.dev.repository
 import io.ktor.server.util.*
 import io.ktor.util.*
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.javatime.day
+import org.jetbrains.exposed.sql.javatime.month
 import org.jetbrains.exposed.sql.transactions.transaction
 import trackerr.rezyfr.dev.db.table.CategoryTable
 import trackerr.rezyfr.dev.db.table.IconTable
@@ -10,17 +12,17 @@ import trackerr.rezyfr.dev.db.table.TransactionTable
 import trackerr.rezyfr.dev.db.table.WalletTable
 import trackerr.rezyfr.dev.mapper.IconMapper
 import trackerr.rezyfr.dev.mapper.TransactionMapper
-import trackerr.rezyfr.dev.model.Category
 import trackerr.rezyfr.dev.model.CategoryType
+import trackerr.rezyfr.dev.model.Granularity
+import trackerr.rezyfr.dev.model.Granularity.*
 import trackerr.rezyfr.dev.model.Transaction
 import trackerr.rezyfr.dev.model.Wallet
 import trackerr.rezyfr.dev.model.response.CategoryResponse
-import trackerr.rezyfr.dev.model.response.SummaryResponse
-import trackerr.rezyfr.dev.model.response.TransactionResponse
 import trackerr.rezyfr.dev.model.response.WalletResponse
-import trackerr.rezyfr.dev.util.formatToLocalDateTime
-import trackerr.rezyfr.dev.util.getEndOfMonth
-import trackerr.rezyfr.dev.util.getStartOfMonth
+import trackerr.rezyfr.dev.model.response.transaction.SummaryResponse
+import trackerr.rezyfr.dev.model.response.transaction.TransactionFrequencyResponse
+import trackerr.rezyfr.dev.model.response.transaction.TransactionResponse
+import trackerr.rezyfr.dev.util.*
 import java.math.BigDecimal
 
 interface TransactionRepository {
@@ -33,6 +35,7 @@ interface TransactionRepository {
 
     fun getRecentTransaction(email: String): List<TransactionResponse>
     fun getMonthlySummary(month: Int, email: String): SummaryResponse
+    fun getTransactionFrequency(granularity: Granularity): List<TransactionFrequencyResponse>
 }
 
 class TransactionRepositoryImpl(
@@ -101,12 +104,11 @@ class TransactionRepositoryImpl(
         }
     }
 
-    @OptIn(InternalAPI::class)
     override fun getMonthlySummary(month: Int, email: String): SummaryResponse {
         return transaction {
             val startDate =
-                getStartOfMonth(month).toLocalDateTime()
-            val endDate = getEndOfMonth(month).toLocalDateTime()
+                getStartOfMonth(month)
+            val endDate = getEndOfMonth(month)
             val income = TransactionTable.select {
                 TransactionTable.userEmail.eq(email) and
                 TransactionTable.date.between(startDate, endDate) and
@@ -122,6 +124,44 @@ class TransactionRepositoryImpl(
                 it[TransactionTable.amount].toLong()
             }.sum()
             SummaryResponse(income, expense)
+        }
+    }
+
+    override fun getTransactionFrequency(granularity: Granularity): List<TransactionFrequencyResponse> {
+        return transaction {
+            val resultOnGranularity = TransactionTable.select {
+                when(granularity) {
+                    WEEK -> {
+                        val startWeek = getStartOfWeek()
+                        val endWeek = getEndOfWeek()
+                        TransactionTable.date.between(startWeek,endWeek)
+                    }
+                    MONTH -> {
+                        val startMonth = getStartOfMonth()
+                        val endMonth = getEndOfMonth()
+                        TransactionTable.date.between(startMonth, endMonth)
+                    }
+                    YEAR -> TransactionTable.date.between(getStartOfYear(), getEndOfYear())
+                }
+            }.groupBy {
+                when(granularity) {
+                    WEEK -> it[TransactionTable.date].dayOfWeek.value
+                    MONTH -> it[TransactionTable.date].dayOfMonth
+                    YEAR -> it[TransactionTable.date].month.value
+                }
+            }
+
+            resultOnGranularity.map {
+                TransactionFrequencyResponse(
+                    it.key,
+                    it.value.filter {
+                        it[TransactionTable.type] == CategoryType.INCOME.toString()
+                    }.sumOf { trx -> trx[TransactionTable.amount].toLong() },
+                    it.value.filter {
+                        it[TransactionTable.type] == CategoryType.EXPENSE.toString()
+                    }.sumOf { trx -> trx[TransactionTable.amount].toLong() }
+                )
+            }
         }
     }
 
