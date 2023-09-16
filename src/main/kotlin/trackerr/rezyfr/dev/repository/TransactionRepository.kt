@@ -22,6 +22,7 @@ import trackerr.rezyfr.dev.model.response.WalletResponse
 import trackerr.rezyfr.dev.model.response.transaction.SummaryResponse
 import trackerr.rezyfr.dev.model.response.transaction.TransactionFrequencyResponse
 import trackerr.rezyfr.dev.model.response.transaction.TransactionResponse
+import trackerr.rezyfr.dev.model.response.transaction.TransactionWithDateResponse
 import trackerr.rezyfr.dev.util.*
 import java.math.BigDecimal
 
@@ -36,6 +37,11 @@ interface TransactionRepository {
     fun getRecentTransaction(email: String): List<TransactionResponse>
     fun getMonthlySummary(month: Int, email: String): SummaryResponse
     fun getTransactionFrequency(granularity: Granularity): List<TransactionFrequencyResponse>
+    fun getTransactionWithDate(
+        type: CategoryType? = null,
+        sortOrder: SortOrder = SortOrder.ASC,
+        categoryId: Int? = null
+    ): List<TransactionWithDateResponse>
 }
 
 class TransactionRepositoryImpl(
@@ -80,27 +86,8 @@ class TransactionRepositoryImpl(
         return transaction {
             TransactionTable.select { TransactionTable.userEmail.eq(email) }
                 .orderBy(TransactionTable.date to SortOrder.ASC).limit(3).map { trxRow ->
-                val cat = CategoryTable.select { CategoryTable.id.eq(trxRow[TransactionTable.categoryId]) }.first()
-                    .let { catRow ->
-                        CategoryResponse(
-                            id = catRow[CategoryTable.id],
-                            name = catRow[CategoryTable.name],
-                            type = CategoryType.valueOf(catRow[CategoryTable.type]),
-                            icon = getIconUrl(catRow[CategoryTable.iconId]),
-                            color = catRow[CategoryTable.color]
-                        )
-                    }
-                val wallet = WalletTable.select { WalletTable.id.eq(trxRow[TransactionTable.walletId]) }.first()
-                    .let { walletRow ->
-                        Wallet(
-                            name = walletRow[WalletTable.name],
-                            balance = walletRow[WalletTable.balance],
-                            userEmail = walletRow[WalletTable.userEmail],
-                            iconId = walletRow[WalletTable.icon]
-                        )
-                    }
-                mapper.rowToTransaction(trxRow, cat, wallet, icon = { getIconUrl(it) })
-            }
+                    mapTransactionResponse(trxRow)
+                }
         }
     }
 
@@ -111,15 +98,15 @@ class TransactionRepositoryImpl(
             val endDate = getEndOfMonth(month)
             val income = TransactionTable.select {
                 TransactionTable.userEmail.eq(email) and
-                TransactionTable.date.between(startDate, endDate) and
-                TransactionTable.type.eq(CategoryType.INCOME.toString())
+                        TransactionTable.date.between(startDate, endDate) and
+                        TransactionTable.type.eq(CategoryType.INCOME.toString())
             }.map {
                 it[TransactionTable.amount].toLong()
             }.sum()
             val expense = TransactionTable.select {
                 TransactionTable.userEmail.eq(email) and
-                TransactionTable.date.between(startDate, endDate) and
-                TransactionTable.type.eq(CategoryType.EXPENSE.toString())
+                        TransactionTable.date.between(startDate, endDate) and
+                        TransactionTable.type.eq(CategoryType.EXPENSE.toString())
             }.map {
                 it[TransactionTable.amount].toLong()
             }.sum()
@@ -130,21 +117,23 @@ class TransactionRepositoryImpl(
     override fun getTransactionFrequency(granularity: Granularity): List<TransactionFrequencyResponse> {
         return transaction {
             val resultOnGranularity = TransactionTable.select {
-                when(granularity) {
+                when (granularity) {
                     WEEK -> {
                         val startWeek = getStartOfWeek()
                         val endWeek = getEndOfWeek()
-                        TransactionTable.date.between(startWeek,endWeek)
+                        TransactionTable.date.between(startWeek, endWeek)
                     }
+
                     MONTH -> {
                         val startMonth = getStartOfMonth()
                         val endMonth = getEndOfMonth()
                         TransactionTable.date.between(startMonth, endMonth)
                     }
+
                     YEAR -> TransactionTable.date.between(getStartOfYear(), getEndOfYear())
                 }
             }.groupBy {
-                when(granularity) {
+                when (granularity) {
                     WEEK -> it[TransactionTable.date].dayOfWeek.value
                     MONTH -> it[TransactionTable.date].dayOfMonth
                     YEAR -> it[TransactionTable.date].month.value
@@ -161,10 +150,55 @@ class TransactionRepositoryImpl(
                         it[TransactionTable.type] == CategoryType.EXPENSE.toString()
                     }.sumOf { trx -> trx[TransactionTable.amount].toLong() }
                 )
-            }
+            }.sortedBy { it.index }
         }
     }
 
+    override fun getTransactionWithDate(
+        type: CategoryType?,
+        sortOrder: SortOrder,
+        categoryId: Int?
+    ): List<TransactionWithDateResponse> {
+        val grouped = transaction {
+            TransactionTable.select {
+                if (categoryId != null) TransactionTable.categoryId.eq(categoryId) else Op.TRUE and
+                        if (type != null) TransactionTable.type.eq(type.toString()) else Op.TRUE
+            }.orderBy(TransactionTable.date to sortOrder).map { trxRow ->
+                mapTransactionResponse(trxRow)
+            }.groupBy {
+                it.createdDate.formatToLocalDateTime().dayOfMonth
+            }
+        }
+        return grouped.map {
+            TransactionWithDateResponse(
+                it.value.first().createdDate,
+                it.value
+            )
+        }
+    }
+
+    private fun mapTransactionResponse(trxRow: ResultRow): TransactionResponse {
+        val cat = CategoryTable.select { CategoryTable.id.eq(trxRow[TransactionTable.categoryId]) }.first()
+            .let { catRow ->
+                CategoryResponse(
+                    id = catRow[CategoryTable.id],
+                    name = catRow[CategoryTable.name],
+                    type = CategoryType.valueOf(catRow[CategoryTable.type]),
+                    icon = getIconUrl(catRow[CategoryTable.iconId]),
+                    color = catRow[CategoryTable.color]
+                )
+            }
+        val wallet = WalletTable.select { WalletTable.id.eq(trxRow[TransactionTable.walletId]) }.first()
+            .let { walletRow ->
+                Wallet(
+                    name = walletRow[WalletTable.name],
+                    balance = walletRow[WalletTable.balance],
+                    userEmail = walletRow[WalletTable.userEmail],
+                    iconId = walletRow[WalletTable.icon]
+                )
+            }
+        return mapper.rowToTransaction(trxRow, cat, wallet, icon = { getIconUrl(it) })!!
+    }
 
     private fun getIconUrl(id: Int): String {
         return IconTable.select { IconTable.id.eq(id) }.first().let { icon ->

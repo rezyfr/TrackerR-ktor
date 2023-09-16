@@ -7,16 +7,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
-import trackerr.rezyfr.dev.db.table.UserTable.email
 import trackerr.rezyfr.dev.model.CategoryType
 import trackerr.rezyfr.dev.model.Transaction
 import trackerr.rezyfr.dev.model.response.CategoryResponse
-import trackerr.rezyfr.dev.model.response.TransactionResponse
+import trackerr.rezyfr.dev.model.response.transaction.TransactionResponse
 import trackerr.rezyfr.dev.model.response.WalletResponse
 import trackerr.rezyfr.dev.repository.CategoryRepository
 import trackerr.rezyfr.dev.repository.TransactionRepository
 import trackerr.rezyfr.dev.repository.WalletRepository
-import java.math.BigDecimal
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class TransactionServiceTest {
