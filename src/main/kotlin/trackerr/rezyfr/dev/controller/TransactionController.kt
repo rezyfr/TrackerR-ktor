@@ -102,11 +102,14 @@ class TransactionControllerImpl(
                 val order =
                     if (call.parameters["sortOrder"] != null) SortOrder.valueOf(call.parameters["sortOrder"]!!) else SortOrder.ASC
                 val categoryId =
-                    if (call.parameters["categoryId"] != null) call.parameters["categoryId"]?.toInt() else null
+                    if (call.parameters["categoryId"] != null) call.parameters["categoryId"]!!.split(",").map { it.toInt() } else null
+                val month =
+                    if (call.parameters["month"] != null) call.parameters["month"]!!.toInt() else null
                 transactionService.getTransactionWithDate(
                     type,
                     order,
-                    categoryId
+                    categoryId,
+                    month
                 ).let {
                     call.respond(HttpStatusCode.OK, it)
                 }

@@ -40,7 +40,8 @@ interface TransactionRepository {
     fun getTransactionWithDate(
         type: CategoryType? = null,
         sortOrder: SortOrder = SortOrder.ASC,
-        categoryId: Int? = null
+        categoryId: List<Int>? = null,
+        month: Int? = null
     ): List<TransactionWithDateResponse>
 }
 
@@ -157,12 +158,26 @@ class TransactionRepositoryImpl(
     override fun getTransactionWithDate(
         type: CategoryType?,
         sortOrder: SortOrder,
-        categoryId: Int?
+        categoryId: List<Int>?,
+        month: Int?
     ): List<TransactionWithDateResponse> {
         val grouped = transaction {
             TransactionTable.select {
-                if (categoryId != null) TransactionTable.categoryId.eq(categoryId) else Op.TRUE and
-                        if (type != null) TransactionTable.type.eq(type.toString()) else Op.TRUE
+                if (categoryId != null) {
+                    TransactionTable.categoryId.inList(categoryId)
+                } else {
+                    Op.TRUE
+                } and if (type != null) {
+                    TransactionTable.type.eq(type.toString())
+                } else {
+                    Op.TRUE
+                } and if (month != null) {
+                    val startDate = getStartOfMonth(month)
+                    val endDate = getEndOfMonth(month)
+                    TransactionTable.date.between(startDate, endDate)
+                } else {
+                    Op.TRUE
+                }
             }.orderBy(TransactionTable.date to sortOrder).map { trxRow ->
                 mapTransactionResponse(trxRow)
             }.groupBy {

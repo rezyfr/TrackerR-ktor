@@ -21,7 +21,8 @@ interface TransactionService {
     fun getTransactionWithDate(
         type: CategoryType? = null,
         sortOrder: SortOrder = SortOrder.ASC,
-        categoryId: Int? = null
+        categoryId: List<Int>? = null,
+        month: Int? = null
     ): BaseResponse<List<TransactionWithDateResponse>>
 }
 
@@ -54,8 +55,9 @@ class TransactionServiceImpl(
     override fun getTransactionWithDate(
         type: CategoryType?,
         sortOrder: SortOrder,
-        categoryId: Int?
+        categoryId: List<Int>?,
+        month: Int?
     ): BaseResponse<List<TransactionWithDateResponse>> {
-        return BaseResponse(true, "Successfully retrieved transaction with date", transactionRepository.getTransactionWithDate(type, sortOrder, categoryId))
+        return BaseResponse(true, "Successfully retrieved transaction with date", transactionRepository.getTransactionWithDate(type, sortOrder, categoryId, month))
     }
 }
