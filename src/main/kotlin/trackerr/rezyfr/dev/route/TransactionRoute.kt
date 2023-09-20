@@ -12,6 +12,7 @@ const val GET_RECENT_TRANSACTION_REQUEST = "$TRANSACTION/recent"
 const val GET_MONTHLY_SUMMARY_REQUEST = "$TRANSACTION/summary"
 const val GET_TRANSACTION_FREQUENCY_REQUEST = "$TRANSACTION/frequency"
 const val GET_TRANSACTION_WITH_DATE_REQUEST = "$TRANSACTION/with-date"
+const val GET_TRANSACTION_REPORT_REQUEST = "$TRANSACTION/report"
 
 @Location(CREATE_TRANSACTION_REQUEST)
 class CreateTransactionRoute
@@ -28,6 +29,9 @@ class GetTransactionFrequencyRoute
 @Location(GET_TRANSACTION_WITH_DATE_REQUEST)
 class GetTransactionWithDateRoute
 
+@Location(GET_TRANSACTION_REPORT_REQUEST)
+class GetTransactionReportRoute
+
 fun Route.transactionRoutes(
     transactionController: TransactionController,
 ) {
@@ -37,5 +41,6 @@ fun Route.transactionRoutes(
         post<GetMonthlySummaryRoute> { transactionController.getMonthlySummary(context) }
         get<GetTransactionFrequencyRoute> { transactionController.getTransactionFrequency(context) }
         get<GetTransactionWithDateRoute> { transactionController.getTransactionWithDate(context) }
+        get<GetTransactionReportRoute> { transactionController.getTransactionReport(context) }
     }
 }

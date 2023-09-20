@@ -5,10 +5,7 @@ import trackerr.rezyfr.dev.model.CategoryType
 import trackerr.rezyfr.dev.model.Granularity
 import trackerr.rezyfr.dev.model.Transaction
 import trackerr.rezyfr.dev.model.response.BaseResponse
-import trackerr.rezyfr.dev.model.response.transaction.SummaryResponse
-import trackerr.rezyfr.dev.model.response.transaction.TransactionFrequencyResponse
-import trackerr.rezyfr.dev.model.response.transaction.TransactionResponse
-import trackerr.rezyfr.dev.model.response.transaction.TransactionWithDateResponse
+import trackerr.rezyfr.dev.model.response.transaction.*
 import trackerr.rezyfr.dev.repository.CategoryRepository
 import trackerr.rezyfr.dev.repository.TransactionRepository
 import trackerr.rezyfr.dev.repository.WalletRepository
@@ -24,6 +21,7 @@ interface TransactionService {
         categoryId: List<Int>? = null,
         month: Int? = null
     ): BaseResponse<List<TransactionWithDateResponse>>
+    fun getTransactionReport(email: String) : BaseResponse<TransactionReportResponse>
 }
 
 class TransactionServiceImpl(
@@ -59,5 +57,9 @@ class TransactionServiceImpl(
         month: Int?
     ): BaseResponse<List<TransactionWithDateResponse>> {
         return BaseResponse(true, "Successfully retrieved transaction with date", transactionRepository.getTransactionWithDate(type, sortOrder, categoryId, month))
+    }
+
+    override fun getTransactionReport(email: String): BaseResponse<TransactionReportResponse> {
+        return BaseResponse(true, "Successfully retrieved transaction report", transactionRepository.getTransactionReport(email))
     }
 }

@@ -22,6 +22,7 @@ interface TransactionController {
     suspend fun getMonthlySummary(call: ApplicationCall)
     suspend fun getTransactionFrequency(call: ApplicationCall)
     suspend fun getTransactionWithDate(call: ApplicationCall)
+    suspend fun getTransactionReport(call: ApplicationCall)
 }
 
 class TransactionControllerImpl(
@@ -111,6 +112,18 @@ class TransactionControllerImpl(
                     categoryId,
                     month
                 ).let {
+                    call.respond(HttpStatusCode.OK, it)
+                }
+            }
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.BadRequest, ErrorResponse(e.message ?: "Something went wrong", false))
+        }
+    }
+
+    override suspend fun getTransactionReport(call: ApplicationCall) {
+        try {
+            call.principal<User>()!!.let { user ->
+                transactionService.getTransactionReport(user.email).let {
                     call.respond(HttpStatusCode.OK, it)
                 }
             }

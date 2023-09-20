@@ -19,10 +19,7 @@ import trackerr.rezyfr.dev.model.Transaction
 import trackerr.rezyfr.dev.model.Wallet
 import trackerr.rezyfr.dev.model.response.CategoryResponse
 import trackerr.rezyfr.dev.model.response.WalletResponse
-import trackerr.rezyfr.dev.model.response.transaction.SummaryResponse
-import trackerr.rezyfr.dev.model.response.transaction.TransactionFrequencyResponse
-import trackerr.rezyfr.dev.model.response.transaction.TransactionResponse
-import trackerr.rezyfr.dev.model.response.transaction.TransactionWithDateResponse
+import trackerr.rezyfr.dev.model.response.transaction.*
 import trackerr.rezyfr.dev.util.*
 import java.math.BigDecimal
 
@@ -43,6 +40,7 @@ interface TransactionRepository {
         categoryId: List<Int>? = null,
         month: Int? = null
     ): List<TransactionWithDateResponse>
+    fun getTransactionReport(email: String) : TransactionReportResponse
 }
 
 class TransactionRepositoryImpl(
@@ -86,7 +84,8 @@ class TransactionRepositoryImpl(
     override fun getRecentTransaction(email: String): List<TransactionResponse> {
         return transaction {
             TransactionTable.select { TransactionTable.userEmail.eq(email) }
-                .orderBy(TransactionTable.date to SortOrder.ASC).limit(3).map { trxRow ->
+                .orderBy(TransactionTable.date to SortOrder.DESC).limit(3)
+                .map { trxRow ->
                     mapTransactionResponse(trxRow)
                 }
         }
@@ -190,6 +189,53 @@ class TransactionRepositoryImpl(
                 it.value
             )
         }
+    }
+
+    override fun getTransactionReport(email: String): TransactionReportResponse {
+        var totalAmount = 0L
+        var expenseAmount = 0L
+        var incomeAmount = 0L
+        val incomeCategoryTrx = hashMapOf<Int, Long>()
+        val expenseCategoryTrx = hashMapOf<Int, Long>()
+        transaction {
+            TransactionTable.select {
+                TransactionTable.userEmail.eq(email) and
+                TransactionTable.date.between(getStartOfMonth(), getEndOfMonth())
+            }.forEach {
+                val amount = it[TransactionTable.amount].toLong()
+                val catId = it[TransactionTable.categoryId]
+
+                totalAmount += amount
+
+                when (it[TransactionTable.type]) {
+                    CategoryType.EXPENSE.toString() -> {
+                        expenseAmount += amount
+                        expenseCategoryTrx[catId] = expenseCategoryTrx.getOrDefault(catId, 0) + amount
+                    }
+                    CategoryType.INCOME.toString() -> {
+                        incomeAmount += amount
+                        incomeCategoryTrx[catId] = incomeCategoryTrx.getOrDefault(catId, 0) + amount
+                    }
+                }
+            }
+        }
+
+        val expenseCat = expenseCategoryTrx.maxByOrNull { it.value }
+        val incomeCat = incomeCategoryTrx.maxByOrNull { it.value }
+
+        val expense = TransactionReport(
+            categoryId = expenseCat?.key,
+            categoryAmount = expenseCat?.value,
+            totalAmount = expenseAmount
+        )
+
+        val income = TransactionReport(
+            categoryId = incomeCat?.key,
+            categoryAmount = incomeCat?.value,
+            totalAmount = incomeAmount
+        )
+
+        return TransactionReportResponse(totalAmount, expense, income)
     }
 
     private fun mapTransactionResponse(trxRow: ResultRow): TransactionResponse {

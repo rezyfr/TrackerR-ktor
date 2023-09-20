@@ -1,4 +1,4 @@
-@file:OptIn(InternalAPI::class, InternalAPI::class, InternalAPI::class)
+@file:OptIn(InternalAPI::class)
 
 package trackerr.rezyfr.dev.util
 
@@ -18,7 +18,9 @@ fun getStartOfMonth(month: Int? = null): LocalDateTime = Calendar.getInstance().
 }.time.toLocalDateTime()
 
 fun getEndOfMonth(month: Int? = null): LocalDateTime = Calendar.getInstance().also {
-    it.set(Calendar.MONTH, month ?: it.get(Calendar.MONTH))
+    month?.let { month ->
+        it.set(Calendar.MONTH, month)
+    }
     it.set(Calendar.DAY_OF_MONTH, it.getActualMaximum(Calendar.DAY_OF_MONTH))
     it.add(Calendar.MILLISECOND, -1)
 }.time.toLocalDateTime()
