@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
 import trackerr.rezyfr.dev.model.User
+import trackerr.rezyfr.dev.model.response.TokenResponse
 import trackerr.rezyfr.dev.repository.CategoryRepository
 import trackerr.rezyfr.dev.repository.UserRepository
 import trackerr.rezyfr.dev.util.JwtService
@@ -33,14 +34,14 @@ class UserServiceTest {
         coEvery { userRepository.findUserByEmail(user.email) } returns null
         coEvery { userRepository.addUser(user) } returns Unit
         coEvery { categoryRepository.populateStarterCategories(user.email) } returns Unit
-        coEvery { jwtService.generateAccessToken(user) } returns "token"
+        coEvery { jwtService.createToken(user) } returns TokenResponse("accessToken", "refreshToken")
 
         userService.createUser(user)
 
         coVerify(atLeast = 1) {
             userRepository.addUser(user)
             categoryRepository.populateStarterCategories(user.email)
-            jwtService.generateAccessToken(user)
+            jwtService.createToken(user)
         }
     }
 
@@ -90,14 +91,14 @@ class UserServiceTest {
     fun `test success authenticate`() {
         coEvery { userRepository.findUserByEmail(user.email) } returns user
         coEvery { passwordManager.hash(user.hashPassword) } returns user.hashPassword
-        coEvery { jwtService.generateAccessToken(user) } returns "token"
+        coEvery { jwtService.createToken(user) } returns TokenResponse("accessToken", "refreshToken")
 
         userService.authenticate(user.email, user.hashPassword)
 
         coVerify(exactly = 1) {
             userRepository.findUserByEmail(user.email)
             passwordManager.hash(user.hashPassword)
-            jwtService.generateAccessToken(user)
+            jwtService.createToken(user)
         }
     }
 

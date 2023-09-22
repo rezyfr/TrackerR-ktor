@@ -26,6 +26,7 @@ class TransactionRepositoryTest : BaseRepositoryTest() {
     lateinit var userRepository: UserRepository
     lateinit var walletRepository: WalletRepository
     lateinit var categoryRepository: CategoryRepository
+    lateinit var iconRepository: IconRepository
 
     @BeforeEach
     override fun setUp() {
@@ -34,6 +35,7 @@ class TransactionRepositoryTest : BaseRepositoryTest() {
         userRepository = UserRepositoryImpl()
         walletRepository = WalletRepositoryImpl(WalletMapper(), IconMapper())
         categoryRepository = CategoryRepositoryImpl(CategoryMapper(), IconMapper())
+        iconRepository = IconRepositoryImpl(IconMapper())
     }
 
     @Test
@@ -41,11 +43,11 @@ class TransactionRepositoryTest : BaseRepositoryTest() {
         withTables(UserTable, WalletTable, CategoryTable, TransactionTable) {
             // given
             userRepository.addUser(user)
-            val wallet = Wallet("test", 1000L, user.email, 0xFFFFFF, 1)
+            val wallet = Wallet("test", 1000L, user.email, 1)
 
             // when
             val walletResponse = walletRepository.addWallet(wallet)
-            val category = categoryRepository.addCategory(Category("test", user.email, CategoryType.INCOME, 1))
+            val category = categoryRepository.addCategory(Category("test", user.email, CategoryType.INCOME, 1,0xffffffff))
             val transaction = transactionRepository.addTransaction(
                 Transaction(100.0, "test", category.id, walletResponse.id, "2021-01-01 00:00:00"),
                 category,
@@ -55,7 +57,6 @@ class TransactionRepositoryTest : BaseRepositoryTest() {
 
             // then
             assert(transaction.amount == 100F)
-            assert(transaction.category == "test")
             assert(transaction.type == "INCOME")
             assert(transaction.wallet == "test")
         }
@@ -67,15 +68,16 @@ class TransactionRepositoryTest : BaseRepositoryTest() {
         withTables(UserTable, WalletTable, CategoryTable, TransactionTable) {
             // given
             userRepository.addUser(user)
+            iconRepository.addIcon(icon)
 
             assert(transactionRepository.getRecentTransaction(user.email).isEmpty())
 
-            val wallet = Wallet("test", 1000L, user.email, 0xFFFFFF, 1)
+            val wallet = Wallet("test", 1000L, user.email,  1)
             val walletResponse = walletRepository.addWallet(wallet)
-            val category = categoryRepository.addCategory(Category("test", user.email, CategoryType.INCOME, 1))
+            val category = categoryRepository.addCategory(Category("test", user.email, CategoryType.INCOME, 1, 0xffffffff))
             repeat(5) {
                 transactionRepository.addTransaction(
-                    Transaction(100.0, "test", category.id, walletResponse.id, "2021-01-01 00:00:0$it"),
+                    Transaction(100.0, "test", category.id, walletResponse.id, "2021-01-01T00:00:0$it.000000"),
                     category,
                     walletResponse,
                     user.email,

@@ -1,5 +1,6 @@
 package trackerr.rezyfr.dev.service
 
+import io.mockk.MockK
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -31,9 +32,9 @@ class TransactionServiceTest {
 
     @Test
     fun `test add transaction`() {
-        coEvery { walletRepository.findWalletById(any(), any()) } returns WalletResponse(1, "test", 10000, 0xffffff, "icon")
-        coEvery { categoryRepository.getCategoryById(any(), any()) } returns CategoryResponse(1, "test", CategoryType.EXPENSE, "icon")
-        coEvery { transactionRepository.addTransaction(any(), any(), any(), any()) } returns TransactionResponse(1, 10000f, "desc", "cat", CategoryType.EXPENSE.name, "wallet", "", "", "2021-01-01T00:00:00.000Z")
+        coEvery { walletRepository.findWalletById(any(), any()) } returns WalletResponse(1, "test", 10000, "icon")
+        coEvery { categoryRepository.getCategoryById(any(), any()) } returns CategoryResponse(1, "test", CategoryType.EXPENSE, "icon", 0xffffff)
+        coEvery { transactionRepository.addTransaction(any(), any(), any(), any()) } returns TransactionResponse(1, 10000f, "desc", mockk(), CategoryType.EXPENSE.name, "wallet", "", "", "2021-01-01T00:00:00.000Z")
 
         val transaction = Transaction(10000.0, "desc", 1, 1, "2021-01-01T00:00:00.000Z")
         val email = "mail@mail.com"
@@ -81,10 +82,11 @@ class TransactionServiceTest {
                 1,
                 10000f,
                 "desc",
+                mockk(),
                 "cat",
                 CategoryType.EXPENSE.name,
                 "wallet",
-                "","",
+                "",
                 "2021-01-01T00:00:00.000Z"
             )
         )
@@ -98,7 +100,6 @@ class TransactionServiceTest {
         assert(result.data!!.isNotEmpty())
         assert(result.data!![0].amount == 10000f)
         assert(result.data!![0].description == "desc")
-        assert(result.data!![0].category == "cat")
         assert(result.data!![0].type == CategoryType.EXPENSE.name)
         assert(result.data!![0].wallet == "wallet")
         assert(result.data!![0].createdDate == "2021-01-01T00:00:00.000Z")

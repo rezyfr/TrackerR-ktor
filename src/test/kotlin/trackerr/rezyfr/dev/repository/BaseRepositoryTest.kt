@@ -13,6 +13,8 @@ import trackerr.rezyfr.dev.db.table.TransactionTable
 import trackerr.rezyfr.dev.db.table.UserTable
 import trackerr.rezyfr.dev.db.table.WalletTable
 import trackerr.rezyfr.dev.model.User
+import trackerr.rezyfr.dev.model.response.Icon
+import trackerr.rezyfr.dev.model.response.IconType
 
 abstract class BaseRepositoryTest {
     @BeforeEach
@@ -21,6 +23,7 @@ abstract class BaseRepositoryTest {
     }
 
     open val user = User("test@gmail.com", "test", "test")
+    open val icon = Icon(IconType.CATEGORY, "")
 
     fun withTables(vararg tables: Table, statement: Transaction.() -> Unit) {
         transaction {

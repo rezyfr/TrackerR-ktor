@@ -27,10 +27,10 @@ class CategoryServiceTest {
 
     @Test
     fun `test add category`() {
-        val catResponse = CategoryResponse(1, "test", CategoryType.EXPENSE, "")
+        val catResponse = CategoryResponse(1, "test", CategoryType.EXPENSE, "", 0xffffffff)
         coEvery { categoryRepository.addCategory(any()) } returns catResponse
 
-        val result = categoryService.addCategory(Category("test", "email@mail.com", CategoryType.EXPENSE, 1))
+        val result = categoryService.addCategory(Category("test", "email@mail.com", CategoryType.EXPENSE, 1, 0xffffffff))
         coVerify(exactly = 1) { categoryRepository.addCategory(any()) }
 
         assert(result.status == true)
@@ -41,13 +41,13 @@ class CategoryServiceTest {
         coEvery { categoryRepository.addCategory(any()) } throws SQLException()
 
         assertThrows<Exception> {
-            categoryService.addCategory(Category("test", "email@email.com", CategoryType.EXPENSE, 1))
+            categoryService.addCategory(Category("test", "email@email.com", CategoryType.EXPENSE, 1, 0xffffffff))
         }
     }
 
     @Test
     fun `test get categories`() {
-        val catResponse = CategoryResponse(1, "test", CategoryType.EXPENSE, "icon")
+        val catResponse = CategoryResponse(1, "test", CategoryType.EXPENSE, "icon", 0xffffffff)
         coEvery { categoryRepository.getCategories(any(), any()) } returns listOf(catResponse)
 
         val result = categoryService.getCategories("mail@mail.com", CategoryType.EXPENSE)

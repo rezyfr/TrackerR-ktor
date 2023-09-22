@@ -27,7 +27,7 @@ class WalletRepositoryTest : BaseRepositoryTest() {
     fun `test add wallet`() {
         withTables(WalletTable, UserTable) {
             userRepository.addUser(user)
-            val wallet = Wallet("test", 1000, user.email, 0xfffffff, 1)
+            val wallet = Wallet("test", 1000, user.email,  1)
 
             val nullResult = walletRepository.findWalletById(0, user.email)
             assert(nullResult == null)
@@ -37,7 +37,6 @@ class WalletRepositoryTest : BaseRepositoryTest() {
                 assert(result != null)
                 assert(result!!.name == wallet.name)
                 assert(result.balance == wallet.balance)
-                assert(result.color == wallet.color)
             }
         }
     }
@@ -50,14 +49,13 @@ class WalletRepositoryTest : BaseRepositoryTest() {
             val emptyResult = walletRepository.findWalletByUserEmail(user.email)
             assert(emptyResult?.isEmpty() == true)
 
-            val wallet = Wallet("test", 1000, user.email, 0xfffffff, 1)
+            val wallet = Wallet("test", 1000, user.email, 1)
             walletRepository.addWallet(wallet).let {
                 val result = walletRepository.findWalletByUserEmail(wallet.userEmail)
                 assert(result != null)
                 assert(result!!.size == 1)
                 assert(result[0].name == wallet.name)
                 assert(result[0].balance == wallet.balance)
-                assert(result[0].color == wallet.color)
             }
         }
     }
@@ -67,7 +65,7 @@ class WalletRepositoryTest : BaseRepositoryTest() {
         withTables(WalletTable, UserTable) {
             userRepository.addUser(user)
 
-            val wallet = Wallet("test", 1000, user.email, 0xfffffff, 1)
+            val wallet = Wallet("test", 1000, user.email,  1)
             val newBalance = 2000L
             val newWallet = walletRepository.addWallet(wallet)
 
