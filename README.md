@@ -21,16 +21,38 @@
   for testing
 - [Kover](https://github.com/Kotlin/kotlinx-kover) for code coverage, publishing
   to [Codecov](https://about.codecov.io/) through GitHub Actions
-- [ElephantSQL](https://www.elephantsql.com/) for PostgreSQL hosting
+- [Tembo](https://tembo.io/) for PostgreSQL hosting
 - [Fly.io](https://fly.io/) for API hosting
 
-## API (WiP)
-`GET Example /v1/example` --> get example data
-```json
-{
-  "data": "example"
-}
-```
+## API Documentation
+
+### User Authentication
+`POST /v1/user/register` - Register a new user
+`POST /v1/user/login` - Login user
+`POST /v1/user/refresh-token` - Refresh authentication token
+`GET /v1/protected/user/check-token` - Check token validity
+
+### Wallet Management
+`POST /v1/protected/wallet/create` - Create a new wallet
+`GET /v1/protected/wallet` - Get all wallets
+`POST /v1/protected/wallet/update/balance` - Update wallet balance
+`GET /v1/protected/wallet/balance` - Get wallet balance
+
+### Category Management
+`POST /v1/protected/category` - Add a new category
+`GET /v1/protected/category` - Get all categories
+
+### Icon Management
+`GET /v1/icon` - Get icons
+`POST /v1/icon/create` - Add a new icon
+
+### Transaction Management
+`POST /v1/protected/transaction` - Create a new transaction
+`GET /v1/protected/transaction/recent` - Get recent transactions
+`POST /v1/protected/transaction/summary` - Get monthly summary
+`GET /v1/protected/transaction/frequency` - Get transaction frequency
+`GET /v1/protected/transaction/with-date` - Get transactions with date
+`GET /v1/protected/transaction/report` - Get transaction report
 
 ## Structure
       + db/

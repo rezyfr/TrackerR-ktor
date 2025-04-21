@@ -17,9 +17,8 @@ object DatabaseFactory {
         val poolSize = dbConfig.property("pool_size").getString().toInt()
         val driver = dbConfig.property("driver").getString()
         val dbName = dbConfig.property("db_name").getString()
-        val url = "jdbc:postgresql://rain.db.elephantsql.com/$dbName"
-
-        application.log.info("Connecting to db at: $url")
+        val dbUrl = dbConfig.property("db_url").getString()
+        val url = "jdbc:postgresql://$dbUrl/$dbName"
 
         val config = HikariConfig()
         config.jdbcUrl = url
